@@ -9,6 +9,7 @@
     width:500px;
     align-items: center;
     flex-direction: column;
+    margin-bottom: 50px;
 }
 
 .imagebox{
@@ -30,3 +31,4 @@
     display:flex;
     align-items: center;
 }
+
