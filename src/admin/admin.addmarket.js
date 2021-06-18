@@ -12,11 +12,14 @@ import Navbar from './admin.navbar'
 import Divider from '../utils/divider'
 import axios from 'axios';
 import Resizer from "react-image-file-resizer";
-
+import SelectedImage from '../utils/selectedimage';
+import { FaTimes } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AddMarket() {
 
-    const [ images, setImages ] = useState(['img1','img2','img3'])
+    const [ images, setImages ] = useState([])
     const [ category, setCategory ] = useState([])
     const [ name, setName ] = useState('');
     const [ desc, setDesc ] = useState('');
@@ -25,33 +28,35 @@ function AddMarket() {
     const [ photoName, setPhotoName ] = useState('');
     const [ photoBase64, setPhotoBase64 ] = useState('');
 
-
     function handleFiles(event) {
-        console.log('started')
+        console.log(event.target.files.length, 'e t f length')
+        console.log(event.target.files)
+        const imgArray = Array.from(event.target.files)
         var fileInput = false;
-        if (event.target.files[0]) {
+        if (event.target.files) {
           fileInput = true;
         }
         if (fileInput) {
           try {
-            Resizer.imageFileResizer(
-              event.target.files[0],
-              500,
-              500,
-              "JPEG",
-              20,
-              0,
-              (uri) => {
-                console.log(uri);
-                var pre_removed = uri.substring(uri.indexOf(",") + 1)
-                setPhotoName(event.target.files[0].name)
-                setPhoto(uri);
-                setPhotoBase64(pre_removed)
-              },
-              "base64",
-              200,
-              200
-            );
+            imgArray.map(file=>{
+                Resizer.imageFileResizer(
+                    file,
+                    500,500,"JPEG",20,0,
+                    (uri) => {
+                      setImages((prevImages)=>{
+                          return [...prevImages,uri]
+                      })
+                      var pre_removed = uri.substring(uri.indexOf(",") + 1)
+                      setPhotoName(event.target.files[0].name)
+                      setPhoto(uri);
+                      setPhotoBase64(pre_removed)
+                    },
+                    "base64",
+                    200,
+                    200
+                );
+            })
+            
           } catch (err) {
             console.log(err);
           }
@@ -69,7 +74,11 @@ function AddMarket() {
                 }
             })
         }else{
-            setCategory(category.filter(cat=>cat !== e.target.value))
+            if(category.length >0){
+                setCategory(category.filter(cat=>cat !== e.target.value))
+            }else{
+                e.target.checked=false
+            }
         }
     }
 
@@ -77,20 +86,57 @@ function AddMarket() {
         const res = await axios.post('http://localhost:7777/api/market/add',{
           images,name,category,desc,location  
         })
-        console.log(res)
+        if(res.data.success){
+            setImages([]);
+            setName('');
+            setCategory('');
+            setDesc('');
+            setLocation('');
+            toast.success(res.data.msg, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: false,
+            });
+        }else{
+            toast.error(res.data.msg, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: false,
+            });
+        }
+        console.log(res.data.msg)
     } 
 
     return (
         <>
         <Navbar />
+        <ToastContainer />
         <div className={styles.container}>
                                                
             <form className={styles.form} onSubmit={(e)=>AddMarket(e)}>
-                <label for="images" className={styles.imagebox}>
-                    <h1>Tap to add images</h1>
-                    <p>Add up to three images</p>
-                </label>
-                <input style={{visibility:'hidden'}} type="file" id="img-up" multiple onChange={e=>handleFiles(e)} accept="image/x-png,image/gif,image/jpeg" />
+                <div className={styles.imagebox}>
+                    <label for="imgs" className={styles.imagebox_main}>
+                        {images.length>0?'':(
+                            <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                                <h1>Tap to add images</h1>
+                                <p>Add up to three images</p>
+                            </div>
+                        )}
+                        {images.map(image=>(
+                            <SelectedImage src={image} />
+                        ))}
+                    </label>
+                </div>
+                <h6 onClick={()=>setImages([])} style={{cursor:'pointer',color:"grey"}}>Clear Images</h6>
+                <input style={{visibility:'hidden'}} type="file" id="imgs" multiple onChange={e=>handleFiles(e)} accept="image/x-png,image/gif,image/jpeg" />
                 <p>category</p>
                 <div className={styles.checkboxes}>
                     <FormControlLabel control={
@@ -138,12 +184,14 @@ function AddMarket() {
                     style={{width:'100%',marginBottom:"50px"}}
                     onChange={(e)=>setName(e.target.value)}
                     required
+                    value={name}
                 />
                 <TextField
                     id="standard-textarea"
                     label="Description"
                     placeholder="lorem ipsum ..."
                     style={{width:'100%',marginBottom:"50px"}}
+                    value={desc}
                     onChange={(e)=>setDesc(e.target.value)}
                     multiline
                     required
@@ -156,10 +204,11 @@ function AddMarket() {
                     style={{width:'100%',marginBottom:"20px"}}
                     onChange={(e)=>setLocation(e.target.value)}
                     required
+                    value={location}
                 />
                 <Divider text="Or" width="45%" textWidth="10%" />
                 <h3 style={{color:'grey'}}>Select location from map</h3>
-                <Button onClick={()=>addMarket()}  style={{width:"100%"}} variant="contained">Create Market </Button>
+                <Button style={{width:"100%"}} variant="contained">Create Market </Button>
             </form>
 
         </div>
