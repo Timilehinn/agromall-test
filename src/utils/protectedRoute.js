@@ -12,7 +12,7 @@ import {AuthContext} from '../contexts/authContextApi'
     const {auth, setAuth, userDetails,setUserDetails} = useContext(AuthContext);
 
     function refreshValidatePage(){
-      let token = localStorage.getItem("_stck_token");
+      let token = localStorage.getItem("_agro_m_tkn");
       if (token) {
         axios.get('http://localhost:7777/api/admin/isuserauth', {
           headers: {
@@ -32,13 +32,13 @@ import {AuthContext} from '../contexts/authContextApi'
             console.log(json.data.details,' the new logs i want to see')
           }else{
             setAuth(false);
-            localStorage.removeItem("_stck_token"); 
+            localStorage.removeItem("_agro_m_tkn"); 
           }
         })
         .catch((err) => {
           setAuth(false);
           console.log(err)
-          localStorage.removeItem("_stck_token");
+          localStorage.removeItem("_agro_m_tkn");
         })
         .then(() => setIsTokenValidated(true));
       } else {

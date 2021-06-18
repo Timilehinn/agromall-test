@@ -19,7 +19,7 @@ function SignIn() {
         if(res.data.session){
             setLoginState(true);
             //INITIATE SESSION ID
-            localStorage.setItem("_stck_token",res.data.token);
+            localStorage.setItem("_agro_m_tkn",res.data.token);
             setUserDetails(res.data.details);
             setAuth(res.data.authenticated);
             history.push('/admin');
