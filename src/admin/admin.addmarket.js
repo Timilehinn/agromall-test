@@ -28,6 +28,16 @@ function AddMarket() {
     const [ photoName, setPhotoName ] = useState('');
     const [ photoBase64, setPhotoBase64 ] = useState('');
 
+    const toastsettings ={
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: false,
+    }
+
     function handleFiles(event) {
         console.log(event.target.files.length, 'e t f length')
         console.log(event.target.files)
@@ -84,35 +94,11 @@ function AddMarket() {
 
     async function addMarket(){
         if(!name || !desc || !location ){
-            toast.error('Input feilds cannot be empty', {
-                position: "bottom-center",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: false,
-            });
+            toast.error('Input feilds cannot be empty',toastsettings);
         }else if(images.length === 0){
-            toast.error('Upload between 1 and 3 images', {
-                position: "bottom-center",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: false,
-            });
+            toast.error('Upload between 1 and 3 images',toastsettings);
         }else if(category.length === 0){
-            toast.error('Choose atleast on category', {
-                position: "bottom-center",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: false,
-            });
+            toast.error('Choose atleast on category',toastsettings);
         }else{
             const res = await axios.post('http://localhost:7777/api/market/add',{
                 images,name,category,desc,location  
@@ -123,25 +109,9 @@ function AddMarket() {
                   setCategory('');
                   setDesc('');
                   setLocation('');
-                  toast.success(res.data.msg, {
-                      position: "bottom-center",
-                      autoClose: 3000,
-                      hideProgressBar: true,
-                      closeOnClick: true,
-                      pauseOnHover: false,
-                      draggable: true,
-                      progress: false,
-                  });
+                  toast.success(res.data.msg, toastsettings);
               }else{
-                  toast.error(res.data.msg, {
-                      position: "bottom-center",
-                      autoClose: 3000,
-                      hideProgressBar: true,
-                      closeOnClick: true,
-                      pauseOnHover: false,
-                      draggable: true,
-                      progress: false,
-                  });
+                  toast.error(res.data.msg,toastsettings);
               }
               console.log(res.data.msg)
         }
