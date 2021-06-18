@@ -7,10 +7,8 @@ function AuthContextApi(props) {
 
     const [ auth, setAuth ] = useState(false);
     const [ userDetails, setUserDetails ] = useState([]);
-    const [ files, setFiles ] = useState([]);
-    const [ folders, setFolders ] = useState([])
 
-    const allValues = {auth, setAuth, userDetails, setUserDetails, files, setFiles, folders, setFolders };
+    const allValues = {auth, setAuth, userDetails, setUserDetails };
      
     
     return (
