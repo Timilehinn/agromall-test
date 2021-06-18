@@ -83,16 +83,28 @@ function AddMarket() {
     }
 
     async function addMarket(){
-        const res = await axios.post('http://localhost:7777/api/market/add',{
-          images,name,category,desc,location  
-        })
-        if(res.data.success){
-            setImages([]);
-            setName('');
-            setCategory('');
-            setDesc('');
-            setLocation('');
-            toast.success(res.data.msg, {
+        if(!name || !desc || !location ){
+            toast.error('Input feilds cannot be empty', {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: false,
+            });
+        }else if(images.length === 0){
+            toast.error('Upload between 1 and 3 images', {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: false,
+            });
+        }else if(category.length === 0){
+            toast.error('Choose atleast on category', {
                 position: "bottom-center",
                 autoClose: 3000,
                 hideProgressBar: true,
@@ -102,17 +114,38 @@ function AddMarket() {
                 progress: false,
             });
         }else{
-            toast.error(res.data.msg, {
-                position: "bottom-center",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: false,
-            });
+            const res = await axios.post('http://localhost:7777/api/market/add',{
+                images,name,category,desc,location  
+              })
+              if(res.data.success){
+                  setImages([]);
+                  setName('');
+                  setCategory('');
+                  setDesc('');
+                  setLocation('');
+                  toast.success(res.data.msg, {
+                      position: "bottom-center",
+                      autoClose: 3000,
+                      hideProgressBar: true,
+                      closeOnClick: true,
+                      pauseOnHover: false,
+                      draggable: true,
+                      progress: false,
+                  });
+              }else{
+                  toast.error(res.data.msg, {
+                      position: "bottom-center",
+                      autoClose: 3000,
+                      hideProgressBar: true,
+                      closeOnClick: true,
+                      pauseOnHover: false,
+                      draggable: true,
+                      progress: false,
+                  });
+              }
+              console.log(res.data.msg)
         }
-        console.log(res.data.msg)
+        
     } 
 
     return (
@@ -208,7 +241,7 @@ function AddMarket() {
                 />
                 <Divider text="Or" width="45%" textWidth="10%" />
                 <h3 style={{color:'grey'}}>Select location from map</h3>
-                <Button style={{width:"100%"}} variant="contained">Create Market </Button>
+                <Button onClick={()=>addMarket()}  style={{width:"100%"}} variant="contained">Create Market </Button>
             </form>
 
         </div>
