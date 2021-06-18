@@ -1,7 +1,7 @@
 import React,{ useState, useEffect, useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import axios from 'axios'
-import styles from '../styles/login.module.css'
+import styles from '../styles/admin/login.module.css'
 import {AuthContext} from '../contexts/authContextApi'
 
   const ProtectedRoute = ({ component: Component, ...rest }) => {
@@ -14,7 +14,7 @@ import {AuthContext} from '../contexts/authContextApi'
     function refreshValidatePage(){
       let token = localStorage.getItem("_stck_token");
       if (token) {
-        axios.get('http://localhost:6363/api/isuserauth', {
+        axios.get('http://localhost:7777/api/admin/isuserauth', {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

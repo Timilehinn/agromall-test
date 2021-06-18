@@ -30,7 +30,7 @@
 }
 
 .form input:focus{
-    border:2px solid lemonchiffon;
+    border:2px solid rgb(44, 216, 130);
     outline: none;
     box-shadow: 1px 1px 3px 3px rgba(233, 230, 230, 0.418);
 }
@@ -42,6 +42,7 @@
     border-radius: .5rem;
     background-color: grey;
     color:white;
+    font-weight:bold;
     cursor:pointer;
 }
 
