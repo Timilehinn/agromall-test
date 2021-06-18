@@ -10,6 +10,9 @@ import Button from '@material-ui/core/Button';
 import styles from '../styles/admin/addmarket.module.css';
 import Navbar from './admin.navbar'
 import Divider from '../utils/divider'
+import axios from 'axios';
+import Resizer from "react-image-file-resizer";
+
 
 function AddMarket() {
 
@@ -17,7 +20,44 @@ function AddMarket() {
     const [ category, setCategory ] = useState([])
     const [ name, setName ] = useState('');
     const [ desc, setDesc ] = useState('');
-    const [ location, setLocation ] = useState('')
+    const [ location, setLocation ] = useState('');
+    const [ photo, setPhoto ] = useState('');
+    const [ photoName, setPhotoName ] = useState('');
+    const [ photoBase64, setPhotoBase64 ] = useState('');
+
+
+    function handleFiles(event) {
+        console.log('started')
+        var fileInput = false;
+        if (event.target.files[0]) {
+          fileInput = true;
+        }
+        if (fileInput) {
+          try {
+            Resizer.imageFileResizer(
+              event.target.files[0],
+              500,
+              500,
+              "JPEG",
+              20,
+              0,
+              (uri) => {
+                console.log(uri);
+                var pre_removed = uri.substring(uri.indexOf(",") + 1)
+                setPhotoName(event.target.files[0].name)
+                setPhoto(uri);
+                setPhotoBase64(pre_removed)
+              },
+              "base64",
+              200,
+              200
+            );
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+
 
     const addCategory=(e)=>{
         if(e.target.checked){
@@ -33,6 +73,13 @@ function AddMarket() {
         }
     }
 
+    async function addMarket(){
+        const res = await axios.post('http://localhost:7777/api/market/add',{
+          images,name,category,desc,location  
+        })
+        console.log(res)
+    } 
+
     return (
         <>
         <Navbar />
@@ -43,7 +90,7 @@ function AddMarket() {
                     <h1>Tap to add images</h1>
                     <p>Add up to three images</p>
                 </label>
-                <input style={{display:"none"}} id="images" type="file" />
+                <input style={{visibility:'hidden'}} type="file" id="img-up" multiple onChange={e=>handleFiles(e)} accept="image/x-png,image/gif,image/jpeg" />
                 <p>category</p>
                 <div className={styles.checkboxes}>
                     <FormControlLabel control={
@@ -90,6 +137,7 @@ function AddMarket() {
                     placeholder="lorem ipsum ..."
                     style={{width:'100%',marginBottom:"50px"}}
                     onChange={(e)=>setName(e.target.value)}
+                    required
                 />
                 <TextField
                     id="standard-textarea"
@@ -98,6 +146,7 @@ function AddMarket() {
                     style={{width:'100%',marginBottom:"50px"}}
                     onChange={(e)=>setDesc(e.target.value)}
                     multiline
+                    required
                 />
                 <FormHelperText id="my-helper-text">A detailed description of the market.</FormHelperText>
                 <TextField
@@ -106,10 +155,11 @@ function AddMarket() {
                     placeholder="No 123, Ave ..."
                     style={{width:'100%',marginBottom:"20px"}}
                     onChange={(e)=>setLocation(e.target.value)}
+                    required
                 />
                 <Divider text="Or" width="45%" textWidth="10%" />
                 <h3 style={{color:'grey'}}>Select location from map</h3>
-                <Button onClick={()=>alert(category)}  style={{width:"100%"}} variant="contained">Create Market </Button>
+                <Button onClick={()=>addMarket()}  style={{width:"100%"}} variant="contained">Create Market </Button>
             </form>
 
         </div>
