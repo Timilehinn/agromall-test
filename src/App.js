@@ -1,24 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
+import ProtectedRoute from './utils/protectedRoute'
+import { Route, Switch } from 'react-router-dom';
+import AdminLogin from './admin/admin.login'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Switch>
+        {/* <Route path='/' component={Home} exact /> */}
+        <Route path='/signin/admin' component={AdminLogin} exact />
+        {/* <Route path='/signup' component={SignUp} exact /> */}
+        {/* <Route path='/signup' component={SignUp} exact /> */}
+        {/* <ProtectedRoute path='/admin' component={DashHome} exact /> */}
+        {/* <ProtectedRoute path='/folder/:name' component={Folder} exact /> */}
+        <Route path="*" component={()=>{return (<h1>error page</h1>)}} />
+    </Switch>
   );
 }
 

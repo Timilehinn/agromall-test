@@ -1,7 +1,7 @@
 import React,{ useState, useEffect, useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import axios from 'axios'
-import styles from '../styles/dashstyles/d.home.module.css'
+import styles from '../styles/login.module.css'
 import {AuthContext} from '../contexts/authContextApi'
 
   const ProtectedRoute = ({ component: Component, ...rest }) => {
