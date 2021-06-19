@@ -5,6 +5,7 @@ import { HiOutlineLocationMarker, HiSearch } from 'react-icons/hi'
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
+import Geocode from "react-geocode";
 
 const MarketDiv=(prop)=>{
 
@@ -25,19 +26,33 @@ const MarketDiv=(prop)=>{
                 {prop.market.desc.length>100? prop.market.desc.substring(0,100)+'...'
                 :
                 prop.market.desc} <Link style={{color:'grey'}} 
-                to={{pathname:`/market/${prop.market.name}`,state:{params:{id:prop.market.id}}}}>more</Link>
+                to={{pathname:`/market/${prop.market.name}`,state:{params:{id:prop.market.id}}}}>view</Link>
             </p>
         </div>
     )
 }
 
 function Home() {
+    Geocode.setApiKey("AIzaSyDACp6ZI_WWhM1y-vwWk9vgtw9t0Gfo--A");
+    Geocode.setRegion("ng");
+    Geocode.setLocationType("ROOFTOP");
     const [ allMarket, setAllMarket ] = useState([]);
     const [ searchResult, setSearchResult ] = useState([])
     const [ selectedCategory, setSelectedCategory ] =useState('');
     const [ searchValue, setSearchValue ] = useState('')
     const [ long, setLong ] = useState('')
     const [ lat, setLat ] = useState('')
+
+
+    Geocode.fromAddress("Eiffel Tower").then(
+        (response) => {
+          const { lat, lng } = response.results[0].geometry.location;
+          console.log(lat, lng);
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
 
     const useStyles =  makeStyles((theme)=>({
         formControl: {
@@ -61,7 +76,7 @@ function Home() {
     })
 
     const classes = useStyles();
-    const api_key ="AIzaSyDACp6ZI_WWhM1y-vwWk9vgtw9t0Gfo--A";
+    const api_key ="";
 
     return (
         <div className={styles.container}>
@@ -106,7 +121,7 @@ function Home() {
                                 <p className={styles.location_icon} style={{color:'grey',fontWeight:'lighter'}}>Nearby markets</p>
                             </div>
                             <InputLabel htmlFor="grouped-select">By Category</InputLabel>
-                            <Select id="grouped-select" defualtValue="category">
+                            <Select style={{marginLeft:'.5rem'}} id="grouped-select" defualtValue="category">
                                 <MenuItem value="dairy">
                                     Dairy
                                 </MenuItem>

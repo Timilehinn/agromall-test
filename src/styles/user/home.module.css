@@ -9,20 +9,20 @@
 nav{
     position: fixed;
     top:0;
+    background-color: white;
     /* height:80px; */
     padding-top:5px;
     width:100%;
     z-index: 1;
-    background-color: transparent;
     /* border-bottom: .5px solid lightgrey; */
     display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    /* flex-direction: column; */
+    align-items: flex-start;
+    justify-content: space-around;
 }
 .logo{
-    margin-bottom: 10px;
     font-size: 1.5rem;
+    margin:.5rem;
     font-weight: 600;
     color:rgb(0,135,55)
 }
@@ -32,28 +32,29 @@ nav{
     align-items: center; */
 /* } */
 .search{
-    width:70%;
+    width:50%;
     display: flex;
     align-items: flex-start;
     background-color: white;
     flex-direction: column;
     align-items: center;
     border: 1px solid lightgrey;
+    border-radius: .75rem;
+    margin-bottom:.5rem
 }
 .search input{
-    height:30px;
+    height:40px;
     outline: none;
     border:0px;
     width:95%;
-    border-top:0px solid lightgrey;
 }
-.search:focus{
-    border:.5px solid rgb(0,135,55);
+.search input:focus{
+    border-bottom:.5px solid lightgrey
 }
 
 .suggested{
     width:auto;
-    padding:.5rem;
+    padding:1rem;
     display:flex;
     align-items: center;
 }
@@ -113,19 +114,26 @@ main{
     border: 1px solid lightgray;
     border-radius: 1rem;
     text-align: center;
-    font-size: .8rem;
+    font-size: .7rem;
     color:grey;
     width:55px;
     padding:.2rem;
-    margin:.3rem;
+    margin:.2rem;
 }
 
 
 @media (min-width: 0px) and (max-width: 767px) { 
+    .container{
+        width:100%;
+        padding-top:10px;
+    }
     nav{
         /* display: none; */
         padding-left: 0rem;
         padding-right: 0rem;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
     }
     .location_icon{
         display:none
@@ -133,14 +141,12 @@ main{
     .search{
         width:250px;
     }
-    .container{
-        width:100%
-    }
+    
     .search{
         width:95%
     }
     main{
-        
+        margin-top:20px;
         width:100%;
         flex-direction: column;
     }

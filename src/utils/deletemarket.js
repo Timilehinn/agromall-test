@@ -47,7 +47,6 @@ function DeleteMarket(prop) {
         if(res.data.success){
             setIsDeleting(false);
             toast.error(res.data.msg,{toastsettings});
-            alert(res.data.msg)
             setSelection([])
             setMarket(res.data.markets)
             console.log(res.data.msg)
