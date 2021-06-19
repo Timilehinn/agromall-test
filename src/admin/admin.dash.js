@@ -6,7 +6,7 @@ import { DataGrid } from '@material-ui/data-grid'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import UpdateMarket from '../utils/updatemarket'
-
+import DeleteMarket from '../utils/deletemarket'
 function AdminDash() {
 
     const useStyles = makeStyles({
@@ -14,6 +14,9 @@ function AdminDash() {
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus': {
                 outline: 'none',
             },
+            "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer": {
+                display: "none"
+              }
         }
     });
     const classes = useStyles();
@@ -39,6 +42,7 @@ function AdminDash() {
     // }
 
     const handleSelection=(e)=>{
+        console.log(e)
         if(!e.isSelected){
             if(selection.length>0){
                 const newsel = selection.filter(sel=>sel.id !== e.data.id)
@@ -96,7 +100,11 @@ function AdminDash() {
             <div className={styles.container}>
                 <div className={styles.data}>
             <h2>My Markets.</h2>
-            <UpdateMarket />
+            <div className={styles.grid_header}>
+                {selection.length === 1?<UpdateMarket selection={selection} />:<></>}
+                {selection.length>0? <DeleteMarket />:<></>}
+            </div>
+           
                     <DataGrid 
                         zIndex={100}
                         className={classes.root}

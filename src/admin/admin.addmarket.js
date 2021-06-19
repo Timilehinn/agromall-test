@@ -96,7 +96,7 @@ function AddMarket() {
         }else if(images.length === 0){
             toast.error('Upload between 1 and 3 images',toastsettings);
         }else if(category.length === 0){
-            toast.error('Choose atleast on category',toastsettings);
+            toast.error('Choose at least one category',toastsettings);
         }else{
             const res = await axios.post('http://localhost:7777/api/market/add',{
                 images,name,category,desc,location  

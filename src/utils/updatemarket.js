@@ -6,20 +6,32 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { GrUpdate } from 'react-icons/gr'
 import axios from 'axios'
-import LinearProgress from '@material-ui/core/LinearProgress'
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
-function Updatemarket() {
 
+function Updatemarket(prop) {
     const [ isUpdating, setIsUpdating ] = useState(false)
     const [ images, setImages ] = useState([])
     const [ category, setCategory ] = useState([])
-    const [ name, setName ] = useState('');
-    const [ desc, setDesc ] = useState('');
-    const [ location, setLocation ] = useState('');
-    const [open, setOpen] = React.useState(false);
-
+    const [ id, setId ] = useState(prop.selection[0].id);
+    const [ name, setName ] = useState(prop.selection[0].name);
+    const [ desc, setDesc ] = useState(prop.selection[0].desc);
+    const [ location, setLocation ] = useState(prop.selection[0].location);
+    const [open, setOpen] = useState(false);
+    const toastsettings ={
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: false,
+    }
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -28,7 +40,25 @@ function Updatemarket() {
         setOpen(false);
     };
 
+    const updateMarket=async()=>{
+        const res = await axios.post('http://localhost:7777/api/market/update',{id,name,desc,location})
+        console.log(res)
+        if(res.data.success){
+            toast.error(res.data.msg,toastsettings);
+            handleClose();
+        }else{
+            toast.error(res.data.msg,toastsettings);
+        }
+    }
+    
     return (
+        <>
+        <ToastContainer />
+        <label onClick={handleClickOpen} style={{border:"1px solid cyan",cursor:'pointer',padding:'.5rem',border:'1px solid lightgrey',display:'flex',alignItems:'center'}}>
+        
+        <GrUpdate size={15} style={{marginRight:'.3rem'}} color="rgb(0,135,55)" /> Update
+        </label>
+        
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       { isUpdating? <LinearProgress/>:'' }
         <DialogTitle id="form-dialog-title">{'sfrbeb'}</DialogTitle>
@@ -57,6 +87,7 @@ function Updatemarket() {
             type="text"
             fullWidth
             value={desc}
+            multiline
             onChange={e=>setDesc(e.target.value)}
             inputProps={{ maxLength: 300 }}
             required
@@ -80,11 +111,12 @@ function Updatemarket() {
           <Button onClick={handleClose}>
             Cancel
           </Button>
-          <Button>
-            Create
+          <Button onClick={()=>updateMarket()}>
+            Update
           </Button>
         </DialogActions>
       </Dialog>
+      </>
     )
 }
 
