@@ -5,6 +5,7 @@ import { HiOutlineLocationMarker, HiSearch } from 'react-icons/hi'
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
+import { FaCheck } from 'react-icons/fa';
 import Geocode from "react-geocode";
 
 const MarketDiv=(prop)=>{
@@ -12,7 +13,9 @@ const MarketDiv=(prop)=>{
     return(
         <div className={styles.market}>
             <div className={styles.market_image}>
-                <img src={prop.market.images[0].imguri}  width="100%" />
+                {prop.market.images.map(img=>(
+                    <img src={img.imguri} style={{}}  width="100%" height='auto' />
+                ))}
             </div>
             <div className={styles.category}>
                 {prop.market.category.map(cat=>(
@@ -43,17 +46,6 @@ function Home() {
     const [ long, setLong ] = useState('')
     const [ lat, setLat ] = useState('')
 
-
-    Geocode.fromAddress("Eiffel Tower").then(
-        (response) => {
-          const { lat, lng } = response.results[0].geometry.location;
-          console.log(lat, lng);
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-
     const useStyles =  makeStyles((theme)=>({
         formControl: {
             margin: theme.spacing(1),
@@ -71,9 +63,25 @@ function Home() {
         getMarkets();
     },[])
 
+    // Searches by filtering avalilabe market 
     const found = allMarket.filter(m => {
         return m.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
     })
+
+    // search by category
+    const categoryHandler=async(e)=>{
+        const res = await axios.get('http://localhost:7777/api/market/all?limit=50&offset=0')
+        const found = []
+        res.data.market.forEach(m=>{
+            m.category.forEach(cat=>{
+                if(cat.cat === selectedCategory){
+                    found.push(m)
+                }
+            })
+        })
+        setAllMarket(found)
+    }
+
 
     const classes = useStyles();
     const api_key ="";
@@ -114,14 +122,13 @@ function Home() {
                     
                     
             </nav>
-
             <span style={{display:'flex',marginTop:'30px',alignItems:'center',fontWeight:'bold',height:'20px'}}>
                             <div style={{display:'flex',alignItems:'center',marginRight:'1rem'}}>
                                 <HiOutlineLocationMarker color="grey" size="20" />
                                 <p className={styles.location_icon} style={{color:'grey',fontWeight:'lighter'}}>Nearby markets</p>
                             </div>
                             <InputLabel htmlFor="grouped-select">By Category</InputLabel>
-                            <Select style={{marginLeft:'.5rem'}} id="grouped-select" defualtValue="category">
+                            <Select onChange={(e)=>setSelectedCategory(e.target.value)} value={selectedCategory} style={{marginLeft:'.5rem'}} id="grouped-select" defualtValue="category">
                                 <MenuItem value="dairy">
                                     Dairy
                                 </MenuItem>
@@ -135,12 +142,20 @@ function Home() {
                                     Grains
                                 </MenuItem>
                             </Select>
+                            <FaCheck onClick={()=>categoryHandler()} />
             </span>
                
             <main>
-                {allMarket.map(market=>(
+                {allMarket.length >0? (
+                    <>
+                    {allMarket.map(market=>(
                     <MarketDiv market={market} />
-                ))}
+                    ))}
+                    </>
+                ):(
+                    <div>No Market is avalilabe for this category yet.</div>
+                )}
+                
             </main>
         </div>
     )
