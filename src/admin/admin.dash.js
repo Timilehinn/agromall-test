@@ -99,10 +99,13 @@ function AdminDash() {
             <Navbar />
             <div className={styles.container}>
                 <div className={styles.data}>
-            <h2>My Markets.</h2>
             <div className={styles.grid_header}>
-                {selection.length === 1?<UpdateMarket selection={selection} />:<></>}
-                {selection.length>0? <DeleteMarket />:<></>}
+                <h2>My Markets.</h2>
+                <div style={{display:"flex",alignItems:"center"}}>
+                    {selection.length === 1?<UpdateMarket selection={selection} />:<></>}
+                    {selection.length>0? <DeleteMarket />:<></>}
+                </div>
+               
             </div>
            
                     <DataGrid 

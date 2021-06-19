@@ -51,7 +51,7 @@ function DeleteMarket(prop) {
         <ToastContainer />
         <label onClick={handleClickOpen} style={{border:"1px solid cyan",cursor:'pointer',padding:'.5rem',border:'1px solid lightgrey',display:'flex',alignItems:'center'}}>
         
-        <FaTrashAlt size={15} style={{marginRight:'.3rem'}} color="rgb(0,135,55)" /> Delete
+        <FaTrashAlt size={15} style={{marginRight:'.3rem'}} /> Delete
         </label>
         
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
