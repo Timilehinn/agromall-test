@@ -4,30 +4,30 @@ import axios from 'axios'
 import { useHistory, Link } from 'react-router-dom'
 import {AuthContext} from '../contexts/authContextApi'
 import { FaTimes } from 'react-icons/fa'
+import { LinearProgress } from '@material-ui/core';
  
 function SignIn(props) {
     const login_msg = props.location.state? props.location.state.params.msg : ''
     const history = useHistory();
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
-    const [loginState , setLoginState] = useState(false);
+    const [isLoading , setIsLoading] = useState(true);
     const {auth, setAuth, userDetails,setUserDetails} = useContext(AuthContext);
     const [ errorBox, setErrorBox ] = useState('none')
 
     const adminLogin= async(e)=>{
         e.preventDefault();
+        setIsLoading(true)
         const res = await axios.post('http://localhost:7777/api/admin/login',{email,password})
-        console.log(res)
         if(res.data.session){
-            setLoginState(true);
+            setIsLoading(false)
             //INITIATE SESSION ID
             localStorage.setItem("_agro_m_tkn",res.data.token);
             setUserDetails(res.data.details);
             setAuth(res.data.authenticated);
             history.push('/admin');
         }else{
-            // setIsLoading(false);
-            setLoginState(false);
+            setIsLoading(false);
             setErrorBox('block')
             history.push({
                 pathname:'/login/admin',
@@ -39,9 +39,11 @@ function SignIn(props) {
     return (
         <>
             <div className={styles.container}>
+                    {isLoading? <div className={styles.loader2} />:''}
                     <form className={styles.form} onSubmit={(e)=>adminLogin(e)}>
+
                         <p style={{textAlign:'center',color:"rgb(0,135,55)",marginBottom:'1rem',fontSize:'3rem'}}>
-                            Login
+                            Login 
                         </p>
                             <div onClick={()=>setErrorBox('none')} style={{display:errorBox}} className={styles.error_box}>
                             <p>
