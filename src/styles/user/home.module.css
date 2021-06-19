@@ -74,10 +74,11 @@ nav{
 }
 
 main{
+    margin-top:50px;
     /* margin-top:100px;
     margin-left: auto;
-    margin-right: auto;
-    max-width: 1900px; */
+    margin-right: auto; */
+    max-width: 1900px;
     width:85%;
     /* display:flex; */
     /* flex-wrap: wrap; */ 
@@ -86,10 +87,10 @@ main{
     align-items: center;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); */
     display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  grid-template-rows: repeat(6, 300px);
+  grid-template-columns: repeat(3, minmax(360px, 1fr));
+  grid-template-rows: repeat(6, auto-fit);
   grid-gap: 1rem;
-  grid-auto-flow: dense;
+  grid-auto-flow:dense
 }
 .market{
     /* display:flex;
@@ -100,7 +101,7 @@ main{
     /* width:30%; 
     margin:.5rem;
     padding:.4rem; */
-    max-width:400px;
+    /* max-width:400px; */
     grid-template-columns: 1fr 1fr 1fr 1fr;
     /* This will result on two rows, each one of 300px */
     grid-template-rows: 300px 300px;
@@ -159,6 +160,7 @@ main{
     }
     main{
         margin-top:20px;
+  grid-template-columns: repeat(1, minmax(100%, 1fr));
         width:95%;
         flex-direction: column;
     }

@@ -41,7 +41,7 @@ function Home() {
     Geocode.setLocationType("ROOFTOP");
     const [ allMarket, setAllMarket ] = useState([]);
     const [ searchResult, setSearchResult ] = useState([])
-    const [ selectedCategory, setSelectedCategory ] =useState('');
+    const [ selectedCategory, setSelectedCategory ] =useState('vegetable'); // default value
     const [ searchValue, setSearchValue ] = useState('')
     const [ long, setLong ] = useState('')
     const [ lat, setLat ] = useState('')
@@ -128,12 +128,12 @@ function Home() {
                                 <p className={styles.location_icon} style={{color:'grey',fontWeight:'lighter'}}>Nearby markets</p>
                             </div>
                             <InputLabel htmlFor="grouped-select">By Category</InputLabel>
-                            <Select onChange={(e)=>setSelectedCategory(e.target.value)} value={selectedCategory} style={{marginLeft:'.5rem'}} id="grouped-select" defualtValue="category">
+                            <Select onChange={(e)=>setSelectedCategory(e.target.value)} value={selectedCategory} style={{marginLeft:'.5rem'}} id="grouped-select" >
                                 <MenuItem value="dairy">
                                     Dairy
                                 </MenuItem>
-                                <MenuItem value="category">
-                                    Category
+                                <MenuItem value="fruits">
+                                    Fruits
                                 </MenuItem>
                                 <MenuItem value="vegetable">
                                     Vegetable
@@ -142,7 +142,7 @@ function Home() {
                                     Grains
                                 </MenuItem>
                             </Select>
-                            <FaCheck onClick={()=>categoryHandler()} />
+                            <FaCheck color="grey" style={{cursor:'pointer'}} onClick={()=>categoryHandler()} />
             </span>
                
             <main>
