@@ -11,7 +11,7 @@ function SignIn(props) {
     const history = useHistory();
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
-    const [isLoading , setIsLoading] = useState(true);
+    const [isLoading , setIsLoading] = useState(false);
     const {auth, setAuth, userDetails,setUserDetails} = useContext(AuthContext);
     const [ errorBox, setErrorBox ] = useState('none')
 
@@ -58,9 +58,9 @@ function SignIn(props) {
                             <span style={{color:'lightgrey',width:'20',fontSize:'.7rem',margin:'.3rem'}}>Administrator Login</span>
                             <div style={{width:'35%',backgroundColor:'lightgrey',height:'1px'}}/>
                         </div>
-                        <input value={email} type="email" placeholder="Email" onChange={(e)=>setEmail(e.target.value)} />
+                        <input value={email} type="email" placeholder="Email" required onChange={(e)=>setEmail(e.target.value)} />
                         
-                        <input value={password} minLength={6} type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)} />
+                        <input value={password} minLength={6} type="password" required placeholder="Password" onChange={(e)=>setPassword(e.target.value)} />
                         <button className={styles.loginbutton}>Login</button>
                     </form>
                     
