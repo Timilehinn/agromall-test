@@ -4,15 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AuthContextApi from './contexts/authContextApi'
+import MarketContextApi from './contexts/marketContextApi'
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <AuthContextApi>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-    </AuthContextApi>
+    <MarketContextApi>
+      <AuthContextApi>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+        </AuthContextApi>
+    </MarketContextApi>
   </React.StrictMode>,
   document.getElementById('root')
 );

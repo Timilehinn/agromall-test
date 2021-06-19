@@ -45,7 +45,7 @@ function SignIn(props) {
                         </p>
                             <div onClick={()=>setErrorBox('none')} style={{display:errorBox}} className={styles.error_box}>
                             <p>
-                            <FaTimes size={20} onClick={()=>setErrorBox('none')} />
+                            <FaTimes size={20} style={{cursor:'pointer'}} onClick={()=>setErrorBox('none')} />
                                 {login_msg}
                             </p>
                             </div>

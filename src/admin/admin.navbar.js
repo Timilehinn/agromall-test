@@ -15,7 +15,7 @@ function Navbar() {
             <h1 style={{color:'rgb(0,135,55)'}}>Admin</h1>
             <div style={{display:'flex',alignItems:'center'}}>
                 <Link to="/admin/addmarket">Add market</Link>
-                <span className={styles.logout} onClick={()=>handleLogout}>
+                <span className={styles.logout} onClick={()=>handleLogout()}>
                     <FiLogOut />
                 Logout
                 </span>

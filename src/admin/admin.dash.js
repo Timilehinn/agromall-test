@@ -1,4 +1,5 @@
-import React,{ useState, useEffect } from 'react'
+import React,{ useState, useEffect, useContext } from 'react'
+import { MarketContext } from '../contexts/marketContextApi'
 import Navbar from './admin.navbar'
 import styles from '../styles/admin/admin.module.css'
 import { Link } from 'react-router-dom'
@@ -19,30 +20,14 @@ function AdminDash() {
               }
         }
     });
+    const { market, setMarket, selection, setSelection } = useContext(MarketContext)
     const classes = useStyles();
-    const [ market, setMarket ] = useState([])
-    const [ selection, setSelection ] = useState([])
     const getMarkets=async()=>{
         const res = await axios.get('http://localhost:7777/api/market/all?limit=50&offset=0')
         setMarket(res.data.market)
     }
 
-    // if(!e.target.checked){
-    //     if(category.length>0){
-    //         const newcat = category.filter(cat=>cat.cat!==e.target.value)
-    //         setCategory(newcat)
-    //     }else{
-    //         e.target.value=false
-    //     }
-        
-    // }else{
-    //     setCategory((prev)=>{
-    //         return [{'cat':e.target.value},...prev]
-    //     })
-    // }
-
     const handleSelection=(e)=>{
-        console.log(e)
         if(!e.isSelected){
             if(selection.length>0){
                 const newsel = selection.filter(sel=>sel.id !== e.data.id)
@@ -92,8 +77,6 @@ function AdminDash() {
         }
     ]
 
-
-
     return (
         <>   
             <Navbar />
@@ -103,11 +86,9 @@ function AdminDash() {
                 <h2>My Markets.</h2>
                 <div style={{display:"flex",alignItems:"center"}}>
                     {selection.length === 1?<UpdateMarket selection={selection} />:<></>}
-                    {selection.length>0? <DeleteMarket />:<></>}
+                    {selection.length>0? <DeleteMarket selection={selection} />:<></>}
                 </div>
-               
-            </div>
-           
+                </div>
                     <DataGrid 
                         zIndex={100}
                         className={classes.root}
@@ -119,7 +100,7 @@ function AdminDash() {
                     />
                 </div>
                 <div className={styles.side}>
-
+                    <h3>Some data or functionality</h3>
                 </div>
             </div>
         </>

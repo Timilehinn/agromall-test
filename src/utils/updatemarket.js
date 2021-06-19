@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import { MarketContext } from '../contexts/marketContextApi'
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { GrUpdate } from 'react-icons/gr'
@@ -15,6 +16,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function Updatemarket(prop) {
+    const { market, setMarket, selection, setSelection } = useContext(MarketContext)
+
     const [ isUpdating, setIsUpdating ] = useState(false)
     const [ images, setImages ] = useState([])
     const [ category, setCategory ] = useState([])
@@ -37,6 +40,7 @@ function Updatemarket(prop) {
     };
 
     const handleClose = () => {
+        setIsUpdating(false)
         setOpen(false);
     };
 
@@ -46,7 +50,9 @@ function Updatemarket(prop) {
         console.log(res)
         if(res.data.success){
             setIsUpdating(false)
+            setMarket(res.data.market)
             toast(res.data.msg,toastsettings);
+            setSelection([])
             handleClose();
         }else{
             setIsUpdating(false)
@@ -103,7 +109,7 @@ function Updatemarket(prop) {
             label="location"
             type="text"
             fullWidth
-            value={name}
+            value={location}
             onChange={e=>setLocation(e.target.value)}
             inputProps={{ maxLength: 50 }}
             required
