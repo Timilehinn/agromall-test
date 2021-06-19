@@ -1,0 +1,78 @@
+.container{
+    margin:3rem;
+    padding:2rem;
+    
+}
+.image_container{
+    width:100%;
+    overflow-x: scroll;
+    display: flex;
+    align-items: center;
+    border-bottom: .5px solid lightgrey;
+}
+.image_container::-webkit-scrollbar{
+    height:5px;
+}
+.image_container::-webkit-scrollbar-thumb{
+    height:5px;
+    border-radius: 5px;
+    background-color: rgb(197, 195, 195);
+}
+.image_container::-webkit-scrollbar-thumb:hover{
+    background-color: rgb(139, 139, 139);;
+}
+.image_container img{
+    width:350px;
+    height:300px;
+    margin:1rem;
+    border:.5px solid lightgrey
+}
+.category{
+    display: flex;
+    align-items: center;
+}
+.category span{
+    padding:.5rem;
+    border: 1px solid lightgray;
+    border-radius: 1rem;
+    text-align: center;
+    font-size: .8rem;
+    color:grey;
+    width:90px;
+    margin-right:.5rem;
+}
+
+
+@media (min-width: 0px) and (max-width: 767px) { 
+    .container{
+        margin:.5rem;
+        padding:1rem
+    }
+
+} 
+  
+  /* Media Query for Tablets Ipads portrait mode */ 
+  @media (min-width: 768px) and (max-width: 1024px){ 
+    /* .navdropdown{
+        display: none;
+    } */
+  /* .files_main_child{
+    max-width: 10%;
+    background-color: red;
+  } */
+  
+  } 
+  
+  /* Media Query for Laptops and Desktops */ 
+  @media (min-width: 1025px) and (max-width: 1280px){ 
+    
+  }
+  
+  /* Media Query for Large screens */ 
+  @media (min-width: 1281px) { 
+   
+  } 
+  
+  @media only screen and(max-width: 700px) { 
+  
+  } 

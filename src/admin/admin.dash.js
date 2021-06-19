@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { DataGrid } from '@material-ui/data-grid'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
+import UpdateMarket from '../utils/updatemarket'
 
 function AdminDash() {
 
@@ -23,6 +24,36 @@ function AdminDash() {
         setMarket(res.data.market)
     }
 
+    // if(!e.target.checked){
+    //     if(category.length>0){
+    //         const newcat = category.filter(cat=>cat.cat!==e.target.value)
+    //         setCategory(newcat)
+    //     }else{
+    //         e.target.value=false
+    //     }
+        
+    // }else{
+    //     setCategory((prev)=>{
+    //         return [{'cat':e.target.value},...prev]
+    //     })
+    // }
+
+    const handleSelection=(e)=>{
+        if(!e.isSelected){
+            if(selection.length>0){
+                const newsel = selection.filter(sel=>sel.id !== e.data.id)
+                setSelection(newsel)
+            }else{
+                e.isSelected = false
+            }
+        }else{
+            setSelection((prevSel)=>{
+                return [e.data,...prevSel]
+            })
+        }
+        
+    }
+
     useEffect(()=>{
         getMarkets();
     },[])
@@ -31,16 +62,30 @@ function AdminDash() {
         { field: "name",width: 200, headerName: "name",renderCell:(params)=>{
             return(
                 <Link to={{
-                    pathname:'',
+                    pathname:`/market/${params.row.name}`,
                     state:{params:{id:params.row.id}}
-                }}>
-                    --{params.row.name}
+                }}
+                    style={{color:'black'}}
+                >
+                    {params.row.name}
                 </Link>
             )
         }}, 
         { field: "desc",width: 200, headerName: "description" },
         { field: "location",width: 200, headerName: "location" },
-        { field: "category",width: 200, headerName: "category" }
+        { field: "category",width: 200, headerName: "category",
+        renderCell:(params)=>{
+            return(
+                <>{
+                    params.row.category.map(cat=>(
+                        <p style={{color:'black'}}>{cat.cat},</p>
+                        
+                    ))
+                }
+                    </>
+            )
+        }
+        }
     ]
 
 
@@ -50,6 +95,8 @@ function AdminDash() {
             <Navbar />
             <div className={styles.container}>
                 <div className={styles.data}>
+            <h2>My Markets.</h2>
+            <UpdateMarket />
                     <DataGrid 
                         zIndex={100}
                         className={classes.root}
@@ -57,9 +104,7 @@ function AdminDash() {
                         pageSize={25}
                         columns={columns}
                         rows={market}
-                        onRowSelected={(e) => setSelection((prevSel)=>{
-                            return [e.data,...prevSel]
-                        })} 
+                        onRowSelected={(e)=>handleSelection(e)} 
                     />
                 </div>
                 <div className={styles.side}>
