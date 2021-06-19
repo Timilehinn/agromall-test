@@ -193,7 +193,7 @@ function AddMarket() {
                     style={{width:'100%',marginBottom:"50px"}}
                     value={desc}
                     onChange={(e)=>setDesc(e.target.value)}
-                    inputProps={{ maxLength: 300 }}
+                    inputProps={{ maxLength: 700 }}
                     multiline
                     required
                 />

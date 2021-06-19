@@ -17,7 +17,7 @@ function AdminDash() {
             },
             "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer": {
                 display: "none"
-              }
+              } 
         }
     });
     const { market, setMarket, selection, setSelection } = useContext(MarketContext)
@@ -44,6 +44,7 @@ function AdminDash() {
     }
 
     useEffect(()=>{
+        setSelection([])
         getMarkets();
     },[])
  
