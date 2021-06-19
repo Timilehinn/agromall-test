@@ -6,12 +6,14 @@ import Home from './user/home'  // homepage or landing page
 import AdminLogin from './admin/admin.login'
 import AdminDashboard from './admin/admin.dash'
 import AddMarket from './admin/admin.addmarket';
+import Market from './components/market'
 
 function App() {
   return (
     <Switch>
         <Route path='/' component={Home} exact />
         <Route path='/login/admin' component={AdminLogin} exact />
+        <Route path='/market/:name' component={Market} exact />
         {/* <Route path='/signup' component={SignUp} exact /> */}
         {/* <Route path='/signup' component={SignUp} exact /> */}
         <ProtectedRoute path='/admin' component={AdminDashboard} exact />

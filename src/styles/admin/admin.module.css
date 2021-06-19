@@ -3,5 +3,12 @@
     margin-left:1rem;
     margin-right:1rem;
     /* padding:1rem; */
-    border:1px solid red
+}
+.data{
+    height:80vh;
+    width:70%;
+}
+.side{
+    width:30%;
+
 }
