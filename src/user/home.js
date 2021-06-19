@@ -1,7 +1,7 @@
 import React,{ useEffect, useState } from 'react';
 import styles from '../styles/user/home.module.css'
 import { makeStyles } from '@material-ui/core';
-import { HiOutlineLocationMarker } from 'react-icons/hi'
+import { HiOutlineLocationMarker, HiSearch } from 'react-icons/hi'
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
@@ -18,8 +18,8 @@ const MarketDiv=(prop)=>{
                     <span>{cat.cat}</span>
                 ))}
            </div>
-            <p style={{color:'black'}}>{prop.market.name}</p>
-            <p style={{color:'grey', fontSize:'.8rem'}}><HiOutlineLocationMarker />  {prop.market.location}</p>
+            <p style={{color:'black'}}>{prop.market.name.length>50? prop.market.name.substring(0,50)+'...':prop.market.name}</p>
+            <p style={{color:'grey', fontSize:'.8rem'}}><HiOutlineLocationMarker />  {prop.market.location.length>50? prop.market.location.substring(0,50)+'...':prop.market.location}</p>
             
             <p style={{color:'black', fontSize:'.8rem'}}>
                 {prop.market.desc.length>100? prop.market.desc.substring(0,100)+'...'
@@ -51,18 +51,14 @@ function Home() {
         setAllMarket(res.data.market)
     }
 
-    const handleSearch=(v)=>{
-        const found = allMarket.filter(m => {
-            return m.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
-        })
-    }
-    
-
-    
 
     useEffect(()=>{
         getMarkets();
     },[])
+
+    const found = allMarket.filter(m => {
+        return m.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
+    })
 
     const classes = useStyles();
     const api_key ="AIzaSyDACp6ZI_WWhM1y-vwWk9vgtw9t0Gfo--A";
@@ -73,34 +69,60 @@ function Home() {
                 <span className={styles.logo}>
                     AgroMall
                 </span>
-                <div className={styles.navitems}>
-                    <span>
+                    <div className={styles.search}>
                         <input 
-                            className={styles.search}
                             value={searchValue}
-                            onChange={(e)=>handleSearch(e.target.value)}
+                            onChange={e=>setSearchValue(e.target.value)}
                         />
-                    </span>
-                    <span>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="grouped-select">By Category</InputLabel>
-                            <Select id="grouped-select" defualtValue="category">
-                                <MenuItem value="dairy">
-                                    sflvjnsl
-                                </MenuItem>
-                            </Select>
-                    </FormControl>
+                        
+                        {searchValue? (
+                        <div style={{display:'flex',width:'100%',wordBreak:'break-word',flexDirection:'column'}}>
+                        {found.splice(0,5).map(f=>(
+                            <Link style={{color:'black',textDecoration:'none'}}
+                                to={{
+                                    pathname:`/market/${f.name}`,
+                                    state:{params:{id:f.id}}
+                                }}
+                            >
+                                <div className={styles.suggested} style={{color:"black"}}>
+                                    {f.name.length>80? f.name.substring(0,80)+'...':f.name}
+                                </div>
+                            </Link>
+
+                        ))}
+                        </div>
+                    ):(
+                        <></>
+                    )
+                    }
+                    </div>
                     
-                    </span>
-                    <span>
-                        <HiOutlineLocationMarker />
-                        <p>Nearby markets</p>
-                    </span>
-                </div>
+                    
             </nav>
 
-
-            <main >
+            <span style={{display:'flex',marginTop:'30px',alignItems:'center',fontWeight:'bold',height:'20px'}}>
+                            <div style={{display:'flex',alignItems:'center',marginRight:'1rem'}}>
+                                <HiOutlineLocationMarker color="grey" size="20" />
+                                <p className={styles.location_icon} style={{color:'grey',fontWeight:'lighter'}}>Nearby markets</p>
+                            </div>
+                            <InputLabel htmlFor="grouped-select">By Category</InputLabel>
+                            <Select id="grouped-select" defualtValue="category">
+                                <MenuItem value="dairy">
+                                    Dairy
+                                </MenuItem>
+                                <MenuItem value="category">
+                                    Category
+                                </MenuItem>
+                                <MenuItem value="vegetable">
+                                    Vegetable
+                                </MenuItem>
+                                <MenuItem value="grains">
+                                    Grains
+                                </MenuItem>
+                            </Select>
+            </span>
+               
+            <main>
                 {allMarket.map(market=>(
                     <MarketDiv market={market} />
                 ))}
