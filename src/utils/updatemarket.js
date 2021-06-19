@@ -41,12 +41,15 @@ function Updatemarket(prop) {
     };
 
     const updateMarket=async()=>{
+        setIsUpdating(true)
         const res = await axios.post('http://localhost:7777/api/market/update',{id,name,desc,location})
         console.log(res)
         if(res.data.success){
-            toast.error(res.data.msg,toastsettings);
+            setIsUpdating(false)
+            toast(res.data.msg,toastsettings);
             handleClose();
         }else{
+            setIsUpdating(false)
             toast.error(res.data.msg,toastsettings);
         }
     }

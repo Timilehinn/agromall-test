@@ -35,8 +35,8 @@ function DeleteMarket(prop) {
         setOpen(false);
     };
 
-    const updateMarket=async()=>{
-        // const res = await axios.post('http://localhost:7777/api/market/update',{id,name,desc,location})
+    const deleteMarket=async()=>{
+        // const res = await axios.post('http://localhost:7777/api/market/delete',{markets:prop.selection})
         // console.log(res)
         // if(res.data.success){
         //     toast.error(res.data.msg,toastsettings);
@@ -56,19 +56,19 @@ function DeleteMarket(prop) {
         
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       { isUpdating? <LinearProgress/>:'' }
-        <DialogTitle id="form-dialog-title">{'sfrbeb'}</DialogTitle>
+        <DialogTitle id="form-dialog-title">Delete Market(s)</DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          {/* <DialogContentText>
             Update market
-          </DialogContentText>
-          These action will delete all the selected markets.
+          </DialogContentText> */}
+          These action will delete all the selected markets. Proceed?
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={()=>updateMarket()}>
-            Update
+          <Button onClick={()=>deleteMarket()}>
+            Proceed
           </Button>
         </DialogActions>
       </Dialog>
