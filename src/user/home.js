@@ -2,12 +2,13 @@ import React,{ useEffect, useState } from 'react';
 import styles from '../styles/user/home.module.css'
 import { makeStyles } from '@material-ui/core';
 import { HiOutlineLocationMarker, HiSearch } from 'react-icons/hi'
-import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
+import { Select, MenuItem, InputLabel, FormControl, Button } from '@material-ui/core';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import Geocode from "react-geocode";
 import { ToastContainer, toast } from 'react-toastify';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 
 const MarketDiv=(prop)=>{
@@ -45,6 +46,7 @@ function Home() {
     const [ searchResult, setSearchResult ] = useState([])
     const [ selectedCategory, setSelectedCategory ] =useState('vegetable'); // default value
     const [ searchValue, setSearchValue ] = useState('')
+    const [ isSearching, setIsSearching ] = useState(false)
     const [ long, setLong ] = useState('')
     const [ lat, setLat ] = useState('')
     const toastsettings ={
@@ -64,8 +66,15 @@ function Home() {
     }))
 
     const getMarkets=async()=>{
+        setIsSearching(true)
         const res = await axios.get('https://agromall-server.herokuapp.com/api/market/all?limit=50&offset=0')
-        setAllMarket(res.data.market)
+        if(res.data.success){
+            setIsSearching(false)
+            setAllMarket(res.data.market)
+        }else{
+            setIsSearching(false)
+            toast.error('Something went wrong, Try again.',toastsettings)
+        }
     }
 
 
@@ -79,20 +88,33 @@ function Home() {
     })
 
     // search by category
-    const categoryHandler=async(e)=>{
-        const res = await axios.get('https://agromall-server.herokuapp.com/api/market/all?limit=50&offset=0')
+    const categoryHandler=async()=>{
+        setIsSearching(true)
         const found = []
-        res.data.market.forEach(m=>{
-            m.category.forEach(cat=>{
-                if(cat.cat === selectedCategory){
-                    found.push(m)
-                }
-            })
-        })
-        setAllMarket(found)
+        try{
+            const res = await axios.get('https://agromall-server.herokuapp.com/api/market/all?limit=50&offset=0')
+            if(res.data.success){
+                res.data.market.forEach(m=>{
+                    m.category.forEach(cat=>{
+                        if(cat.cat === selectedCategory){
+                            found.push(m)
+                        }
+                    })
+                })
+                setAllMarket(found)
+                setIsSearching(false)
+            }else{
+                setIsSearching(false)
+            }
+        }catch(err){
+            setIsSearching(false)
+            toast.error('Something went wrong. Try again.',toastsettings)
+        }
+        
     }
     
     const handleSearch=async()=>{
+        setIsSearching(true)
         const res = await axios.get(`https://agromall-server.herokuapp.com/api/market/search?q=${searchValue}`)
         // console.log(res.data.markets)
         const _markets = [];
@@ -101,7 +123,11 @@ function Home() {
                 _markets.push({id:m._source.id,location:m._source.location,images:m._source.images,category:m._source.category,name:m._source.name,desc:m._source.desc})
             })
             setAllMarket(_markets)
+            setIsSearching(false)
+            setSearchValue('')
+
         }else{
+            setIsSearching(false)
             toast.error(res.data.msg, toastsettings)
         }
         
@@ -112,6 +138,8 @@ function Home() {
     const api_key ="";
 
     return (
+        <>
+        {isSearching? <LinearProgress style={{zIndex:100,width:'100%'}} />:<></>}
         <div className={styles.container}>
             <ToastContainer />
             <nav>
@@ -157,11 +185,14 @@ function Home() {
                     
             </nav>
             <span style={{display:'flex',marginTop:'30px',alignItems:'center',fontWeight:'bold',height:'20px'}}>
-                            <div style={{display:'flex',alignItems:'center',marginRight:'1rem'}}>
-                                <HiOutlineLocationMarker color="grey" size="20" />
-                                <p className={styles.location_icon} style={{color:'grey',fontWeight:'lighter'}}>Nearby markets</p>
-                            </div>
-                            <InputLabel htmlFor="grouped-select">By Category</InputLabel>
+                            {/* <div style={{display:'flex',alignItems:'center',marginRight:'1rem'}}> */}
+                                <Button>
+                                    <HiOutlineLocationMarker color="grey" size="20" />
+                                    <span className={styles.location_text}>Nearby markets</span>
+                                </Button>
+                               <span style={{color:'lightgrey',paddingRight:'.5rem'}}>|</span>
+                            {/* </div> */}
+                            <InputLabel htmlFor="grouped-select" style={{fontWeight:400,color:'grey',fontSize:'1.05rem'}}>Category</InputLabel>
                             <Select onChange={(e)=>setSelectedCategory(e.target.value)} value={selectedCategory} style={{marginLeft:'.5rem'}} id="grouped-select" >
                                 <MenuItem value="dairy">
                                     Dairy
@@ -187,11 +218,12 @@ function Home() {
                     ))}
                     </>
                 ):(
-                    <h2 style={{color:'grey'}}>We were unable to find any market for your search at this time.</h2>
+                    <h2 style={{color:'grey'}}>No Market found at this time.</h2>
                 )}
                 
             </main>
         </div>
+        </>
     )
 }
 
