@@ -16,6 +16,7 @@ import SelectedImage from '../utils/selectedimage';
 import { FaTimes } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { v4 } from 'uuid'
 
 function AddMarket() {
 
@@ -99,7 +100,7 @@ function AddMarket() {
             toast.error('Choose at least one category',toastsettings);
         }else{
             const res = await axios.post('https://agromall-server.herokuapp.com/api/market/add',{
-                images,name,category,desc,location  
+                id:v4(),images,name,category,desc,location  
               })
               if(res.data.success){
                   setImages([]);
@@ -118,7 +119,7 @@ function AddMarket() {
 
     return (
         <>
-        <Navbar />
+        <Navbar sync={false} />
         <ToastContainer />
         <div className={styles.container}>
             <form className={styles.form} onSubmit={(e)=>AddMarket(e)}>
@@ -183,6 +184,7 @@ function AddMarket() {
                     placeholder="lorem ipsum ..."
                     style={{width:'100%',marginBottom:"50px"}}
                     onChange={(e)=>setName(e.target.value)}
+                    inputProps={{ maxLength: 70 }}
                     required
                     value={name}
                 />

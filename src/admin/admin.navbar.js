@@ -1,33 +1,98 @@
-import React from 'react'
+import React,{ useState } from 'react'
 import styles from '../styles/admin/navbar.module.css'
 import { FiLogOut } from 'react-icons/fi'
 import { Link, useHistory } from 'react-router-dom'
 import axios from 'axios'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function Navbar() {
+
+function Navbar(prop) {
+    const toastsettings ={
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: false,
+    }
+    const [ isSyncing, setIsSyncing ] = useState(false)
+    const [open, setOpen] = useState(false);
     const history = useHistory();
     const handleLogout=()=>{
         localStorage.removeItem('_agro_m_tkn')
         history.push('/')
     }
     const syncSearch=async()=>{
+        setIsSyncing(true)
         const res = await axios.post('https://agromall-server.herokuapp.com/api/market/sync-searchengine')
         console.log(res.data.msg)
+        if(res.data.success){
+            setIsSyncing(false)
+            toast.success(res.data.msg,toastsettings)
+            setOpen(false)
+        }else{
+            setIsSyncing(false)
+            setOpen(false)
+            toast.error(res.data.msg,toastsettings)
+        }
+    }
+
+    
+    
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setIsSyncing(false)
+        setOpen(false);
+    };
+    const addMarket =()=>{
+        history.push('/admin/addmarket')
     }
 
     return (
+        <>
+        <ToastContainer />
         <div className={styles.navbar}>
             <h1 style={{color:'rgb(0,135,55)'}}>Admin</h1>
             <div style={{display:'flex',alignItems:'center'}}>
-                <span onClick={()=>syncSearch()}>Resync search</span>
-                <Link to="/admin/addmarket">Add market</Link>
+                {prop.sync? <Button variant="outlined" style={{marginRight:"1rem"}} onClick={()=>handleClickOpen()}>sync search</Button>:<></>}
+                <Button variant="outlined" onClick={()=>addMarket()}>Add market</Button>
                 <span className={styles.logout} onClick={()=>handleLogout()}>
                     <FiLogOut />
                 Logout
                 </span>
             </div>
+
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                { isSyncing? <LinearProgress/>:'' }
+                <DialogTitle id="form-dialog-title">Sync Market Data with Search Engine.</DialogTitle>
+                <DialogContent>
+                This process will manually synchronize unsynced market data with search engine. Best used when
+                there's an error while auto sync fails when creating or updating market. Proceed?
+                </DialogContent>
+                <DialogActions>
+                <Button style={{textTransform:'Capitalize'}} onClick={handleClose}>
+                    No
+                </Button>
+                <Button style={{textTransform:'Capitalize'}} onClick={()=>syncSearch()}>
+                    Yes
+                </Button>
+                </DialogActions>
+            </Dialog>
            
         </div>
+        </>
     )
 }
 

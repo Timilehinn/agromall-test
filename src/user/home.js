@@ -140,7 +140,8 @@ function Home() {
                                 }}
                             >
                                 <div className={styles.suggested} style={{color:"black"}}>
-                                    {f.name.length>80? f.name.substring(0,80)+'...':f.name}
+                                    {f.name.length>80? f.name.substring(0,80)+'...':f.name} 
+                                    <span style={{fontSize:'.75rem',color:'grey',fontStyle:'italic'}}>on this page</span>
                                 </div>
                             </Link>
 

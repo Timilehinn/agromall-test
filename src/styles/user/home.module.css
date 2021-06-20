@@ -41,7 +41,7 @@ nav{
     flex-direction: column;
     align-items: center;
     border: 1px solid lightgrey;
-    border-radius: .75rem;
+    border-radius: 1rem;
     padding-left:.75rem;
     padding-right:.75rem;
 }
@@ -55,6 +55,7 @@ nav{
     color:rgb(0,135,55);
     font-weight: bold;
     cursor: pointer;
+    padding-right: 0rem;
 }
 
 
@@ -70,15 +71,20 @@ nav{
 
 .suggested{
     width:auto;
-    padding:.75rem;
+    padding:.5rem;
+    /* padding-bottom:.75rem; */
     display:flex;
     align-items: center;
     margin-bottom:.5rem;
+    display: flex;
+    align-items: center;
+    font-size: .8rem;
+    justify-content: space-between;
 }
 
 
 .suggested:hover{
-    background-color: rgb(241, 241, 241);
+    background-color: rgba(241, 241, 241, 0.527);
 }
 
 .navitems span{

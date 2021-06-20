@@ -5,7 +5,9 @@ import { useHistory, Link } from 'react-router-dom'
 import {AuthContext} from '../contexts/authContextApi'
 import { FaTimes } from 'react-icons/fa'
 import { LinearProgress } from '@material-ui/core';
- 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function SignIn(props) {
     const login_msg = props.location.state? props.location.state.params.msg : ''
     const history = useHistory();
@@ -14,30 +16,53 @@ function SignIn(props) {
     const [isLoading , setIsLoading] = useState(false);
     const {auth, setAuth, userDetails,setUserDetails} = useContext(AuthContext);
     const [ errorBox, setErrorBox ] = useState('none')
+    const toastsettings ={
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: false,
+    }
 
     const adminLogin= async(e)=>{
+
         e.preventDefault();
-        setIsLoading(true)
-        const res = await axios.post('https://agromall-server.herokuapp.com/api/admin/login',{email,password})
-        if(res.data.session){
-            setIsLoading(false)
-            //INITIATE SESSION ID
-            localStorage.setItem("_agro_m_tkn",res.data.token);
-            setUserDetails(res.data.details);
-            setAuth(res.data.authenticated);
-            history.push('/admin');
-        }else{
-            setIsLoading(false);
-            setErrorBox('block')
-            history.push({
-                pathname:'/login/admin',
-                state:{params:{msg:res.data.auth_msg}}
-            });
-        }
+            setIsLoading(true)
+            try{
+                const res = await axios.post('https://agromall-server.herokuapp.com/api/admin/login',{email,password})
+                if(res.data.session){
+                    setIsLoading(false)
+                    //INITIATE SESSION ID
+                    localStorage.setItem("_agro_m_tkn",res.data.token);
+                    setUserDetails(res.data.details);
+                    setAuth(res.data.authenticated);
+                    history.push('/admin');
+                }else{
+                    setIsLoading(false);
+                    setErrorBox('block')
+                    history.push({
+                        pathname:'/login/admin',
+                        state:{params:{msg:res.data.auth_msg}}
+                    });
+                }
+            }catch(err){
+                console.log(err)
+                setIsLoading(false);
+                setErrorBox('block')
+                history.push({
+                    pathname:'/login/admin',
+                    state:{params:{msg:'There seems to be an issue with your internet connection.'}}
+                });
+                // toast.error(err.response.message,toastsettings)
+            }
+            
     }
 
     return (
         <>
+            <ToastContainer />
             <div className={styles.container}>
                     {isLoading? <div className={styles.loader2} />:''}
                     <form className={styles.form} onSubmit={(e)=>adminLogin(e)}>
@@ -51,7 +76,6 @@ function SignIn(props) {
                                 {login_msg}
                             </p>
                             </div>
-                        
                         
                         <div style={{display:'flex',width:'100%',marginTop:'.3rem',justifyContent:'space-between',alignItems:'center'}}>
                             <div style={{width:'35%',backgroundColor:'lightgrey',height:'1px'}}/>

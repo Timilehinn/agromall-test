@@ -80,7 +80,7 @@ function AdminDash() {
 
     return (
         <>   
-            <Navbar />
+            <Navbar sync={true} />
             <div className={styles.container}>
                 <div className={styles.data}>
             <div className={styles.grid_header}>
