@@ -87,7 +87,7 @@ main{
     align-items: center;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); */
     display: grid;
-  grid-template-columns: repeat(3, minmax(360px, 1fr));
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
   grid-template-rows: repeat(6, auto-fit);
   grid-gap: 1rem;
   grid-auto-flow:dense
@@ -177,17 +177,8 @@ main{
 } 
   
   /* Media Query for Tablets Ipads portrait mode */ 
-  @media (min-width: 768px) and (max-width: 1024px){ 
-    /* .navdropdown{
-        display: none;
-    } */
-  /* .files_main_child{
-    max-width: 10%;
-    background-color: red;
-  } */
-  
-.market_image{
-  } 
+@media (min-width: 768px) and (max-width: 1024px){ 
+    
 }
   
   /* Media Query for Laptops and Desktops */ 
@@ -201,6 +192,7 @@ main{
    
   } 
   
-  @media only screen and(max-width: 700px) { 
+  @media only screen and(max-width: 7600px) {
+       
   
   } 

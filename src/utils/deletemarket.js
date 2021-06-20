@@ -42,7 +42,7 @@ function DeleteMarket(prop) {
 
     const deleteMarket=async()=>{
         setIsDeleting(true)
-        const res = await axios.post('http://localhost:7777/api/market/delete',{markets:prop.selection})
+        const res = await axios.post('https://agromall-server.herokuapp.com/api/market/delete',{markets:prop.selection})
         console.log(res)
         if(res.data.success){
             setIsDeleting(false);

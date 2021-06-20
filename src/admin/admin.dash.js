@@ -23,7 +23,7 @@ function AdminDash() {
     const { market, setMarket, selection, setSelection } = useContext(MarketContext)
     const classes = useStyles();
     const getMarkets=async()=>{
-        const res = await axios.get('http://localhost:7777/api/market/all?limit=50&offset=0')
+        const res = await axios.get('https://agromall-server.herokuapp.com/api/market/all?limit=50&offset=0')
         setMarket(res.data.market)
     }
 

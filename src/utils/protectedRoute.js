@@ -14,7 +14,7 @@ import {AuthContext} from '../contexts/authContextApi'
     function refreshValidatePage(){
       let token = localStorage.getItem("_agro_m_tkn");
       if (token) {
-        axios.get('http://localhost:7777/api/admin/isuserauth', {
+        axios.get('https://agromall-server.herokuapp.com/api/admin/isuserauth', {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

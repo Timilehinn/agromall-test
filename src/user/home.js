@@ -7,6 +7,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'
 import { FaCheck } from 'react-icons/fa';
 import Geocode from "react-geocode";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const MarketDiv=(prop)=>{
 
@@ -45,7 +47,15 @@ function Home() {
     const [ searchValue, setSearchValue ] = useState('')
     const [ long, setLong ] = useState('')
     const [ lat, setLat ] = useState('')
-
+    const toastsettings ={
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: false,
+    }
     const useStyles =  makeStyles((theme)=>({
         formControl: {
             margin: theme.spacing(1),
@@ -54,7 +64,7 @@ function Home() {
     }))
 
     const getMarkets=async()=>{
-        const res = await axios.get('http://localhost:7777/api/market/all?limit=50&offset=0')
+        const res = await axios.get('https://agromall-server.herokuapp.com/api/market/all?limit=50&offset=0')
         setAllMarket(res.data.market)
     }
 
@@ -70,7 +80,7 @@ function Home() {
 
     // search by category
     const categoryHandler=async(e)=>{
-        const res = await axios.get('http://localhost:7777/api/market/all?limit=50&offset=0')
+        const res = await axios.get('https://agromall-server.herokuapp.com/api/market/all?limit=50&offset=0')
         const found = []
         res.data.market.forEach(m=>{
             m.category.forEach(cat=>{
@@ -81,13 +91,29 @@ function Home() {
         })
         setAllMarket(found)
     }
-
+    
+    const handleSearch=async()=>{
+        const res = await axios.get(`https://agromall-server.herokuapp.com/api/market/search?q=${searchValue}`)
+        // console.log(res.data.markets)
+        const _markets = [];
+        if(res.data.success){
+            res.data.markets.forEach(m=>{
+                _markets.push({id:m._source.id,location:m._source.location,images:m._source.images,category:m._source.category,name:m._source.name,desc:m._source.desc})
+            })
+            setAllMarket(_markets)
+        }else{
+            toast.error(res.data.msg, toastsettings)
+        }
+        
+        console.log(_markets)
+    }
 
     const classes = useStyles();
     const api_key ="";
 
     return (
         <div className={styles.container}>
+            <ToastContainer />
             <nav>
                 <span className={styles.logo}>
                     AgroMall
@@ -97,8 +123,8 @@ function Home() {
                             value={searchValue}
                             onChange={e=>setSearchValue(e.target.value)}
                         />
-                        
-                        {searchValue? (
+                        <button onClick={()=>handleSearch()}>Search</button>
+                        {/* {searchValue? (
                         <div style={{display:'flex',width:'100%',wordBreak:'break-word',flexDirection:'column'}}>
                         {found.splice(0,5).map(f=>(
                             <Link style={{color:'black',textDecoration:'none'}}
@@ -117,7 +143,7 @@ function Home() {
                     ):(
                         <></>
                     )
-                    }
+                    } */}
                     </div>
                     
                     

@@ -98,7 +98,7 @@ function AddMarket() {
         }else if(category.length === 0){
             toast.error('Choose at least one category',toastsettings);
         }else{
-            const res = await axios.post('http://localhost:7777/api/market/add',{
+            const res = await axios.post('https://agromall-server.herokuapp.com/api/market/add',{
                 images,name,category,desc,location  
               })
               if(res.data.success){

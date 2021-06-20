@@ -18,7 +18,7 @@ function SignIn(props) {
     const adminLogin= async(e)=>{
         e.preventDefault();
         setIsLoading(true)
-        const res = await axios.post('http://localhost:7777/api/admin/login',{email,password})
+        const res = await axios.post('https://agromall-server.herokuapp.com/api/admin/login',{email,password})
         if(res.data.session){
             setIsLoading(false)
             //INITIATE SESSION ID

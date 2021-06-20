@@ -13,7 +13,7 @@ function Market(props) {
     const [ location, setLocation ] = useState('');
 
     const getMarket=async()=>{
-        const res = await axios.get(`http://localhost:7777/api/market/one?id=${id}`)
+        const res = await axios.get(`https://agromall-server.herokuapp.com/api/market/one?id=${id}`)
         setName(res.data.market.name) 
         setDesc(res.data.market.desc) 
         setLocation(res.data.market.location) 

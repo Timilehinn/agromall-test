@@ -46,7 +46,7 @@ function Updatemarket(prop) {
 
     const updateMarket=async()=>{
         setIsUpdating(true)
-        const res = await axios.post('http://localhost:7777/api/market/update',{id,name,desc,location})
+        const res = await axios.post('https://agromall-server.herokuapp.com/api/market/update',{id,name,desc,location})
         console.log(res)
         if(res.data.success){
             setIsUpdating(false)
