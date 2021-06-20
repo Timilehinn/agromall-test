@@ -5,7 +5,7 @@ import { HiOutlineLocationMarker, HiSearch } from 'react-icons/hi'
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import Geocode from "react-geocode";
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -118,15 +118,21 @@ function Home() {
                 <span className={styles.logo}>
                     AgroMall
                 </span>
+                {/* <div style={{display:'flex',width:'60%',alignItems:'flex-start',justifyContent:"flex-end"}}> */}
                     <div className={styles.search}>
-                        <input 
-                            value={searchValue}
-                            onChange={e=>setSearchValue(e.target.value)}
-                        />
-                        <button onClick={()=>handleSearch()}>Search</button>
-                        {/* {searchValue? (
+                        <span style={{display:'flex',width:'100%',alignItems:'center'}}>
+                            <input 
+                                value={searchValue}
+                                onChange={e=>setSearchValue(e.target.value)}
+                                placeholder="Search for a market"
+                            />
+                            <FaTimes onClick={()=>setSearchValue('')} style={{cursor:'pointer',paddingRight:'.5rem'}}  color="rgb(0,135,55)" />
+                            <button className={styles.search_button} onClick={()=>handleSearch()}>Search</button>
+                        </span>
+                      
+                        {searchValue? (
                         <div style={{display:'flex',width:'100%',wordBreak:'break-word',flexDirection:'column'}}>
-                        {found.splice(0,5).map(f=>(
+                        {found.splice(0,3).map(f=>(
                             <Link style={{color:'black',textDecoration:'none'}}
                                 to={{
                                     pathname:`/market/${f.name}`,
@@ -143,9 +149,10 @@ function Home() {
                     ):(
                         <></>
                     )
-                    } */}
+                    }
+
                     </div>
-                    
+                    {/* </div> */}
                     
             </nav>
             <span style={{display:'flex',marginTop:'30px',alignItems:'center',fontWeight:'bold',height:'20px'}}>
@@ -179,7 +186,7 @@ function Home() {
                     ))}
                     </>
                 ):(
-                    <div>No Market is avalilabe for this category yet.</div>
+                    <h2 style={{color:'grey'}}>We were unable to find any market for your search at this time.</h2>
                 )}
                 
             </main>
