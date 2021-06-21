@@ -18,7 +18,7 @@ nav{
     display:flex;
     /* flex-direction: column; */
     align-items: flex-start;
-    justify-content: space-around;
+    justify-content: center;
 }
 .logo{
     font-size: 1.5rem;

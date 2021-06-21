@@ -41,12 +41,20 @@ function DeleteMarket(prop) {
     };
 
     const deleteMarket=async()=>{
+        let token = localStorage.getItem("_agro_m_tkn");
         setIsDeleting(true)
-        const res = await axios.post('https://agromall-server.herokuapp.com/api/market/delete',{markets:prop.selection})
+        const res = await axios.post('https://agromall-server.herokuapp.com/api/market/delete',
+        {markets:prop.selection},{
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            "x-access-token":token,
+          }
+        })
         console.log(res)
         if(res.data.success){
             setIsDeleting(false);
-            toast.error(res.data.msg,{toastsettings});
+            toast.success(res.data.msg,toastsettings);
             setSelection([])
             setMarket(res.data.markets)
             console.log(res.data.msg)

@@ -92,6 +92,7 @@ function AddMarket() {
     }
 
     async function addMarket(){
+        let token = localStorage.getItem("_agro_m_tkn");
         if(!name || !desc || !location ){
             toast.error('Input feilds cannot be empty',toastsettings);
         }else if(images.length === 0){
@@ -101,6 +102,12 @@ function AddMarket() {
         }else{
             const res = await axios.post('https://agromall-server.herokuapp.com/api/market/add',{
                 id:v4(),images,name,category,desc,location  
+              },{
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    "x-access-token":token,
+                }
               })
               if(res.data.success){
                   setImages([]);
@@ -119,7 +126,7 @@ function AddMarket() {
 
     return (
         <>
-        <Navbar sync={false} />
+        <Navbar sync={false} addmarket={false} />
         <ToastContainer />
         <div className={styles.container}>
             <form className={styles.form} onSubmit={(e)=>AddMarket(e)}>

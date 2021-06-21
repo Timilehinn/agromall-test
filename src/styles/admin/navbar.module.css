@@ -14,7 +14,25 @@
     justify-content: space-between;
     border-bottom:.5px solid lightgrey
 }
+.logo{
+    color:rgb(0,135,55);
+    font-size: 1.5rem;
+}
 .logout{
     cursor:pointer;
     margin-left: 2rem;
+}
+@media (min-width: 0px) and (max-width: 767px) { 
+    .logo{
+        display:none
+    }
+    
+    .navbar{
+        padding-left: 1rem;
+        padding-right: 1rem;
+        justify-content: flex-end;
+    }
+    #logout_text{
+        display:none
+    }
 }

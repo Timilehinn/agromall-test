@@ -45,13 +45,20 @@ function Updatemarket(prop) {
     };
 
     const updateMarket=async()=>{
+        let token = localStorage.getItem("_agro_m_tkn");
         setIsUpdating(true)
-        const res = await axios.post('https://agromall-server.herokuapp.com/api/market/update',{id,name,desc,location})
+        const res = await axios.post('https://agromall-server.herokuapp.com/api/market/update',
+        {id,name,desc,location},
+        {headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          "x-access-token":token,
+        }})
         console.log(res)
         if(res.data.success){
             setIsUpdating(false)
             setMarket(res.data.market)
-            toast(res.data.msg,toastsettings);
+            toast.success(res.data.msg,toastsettings);
             setSelection([])
             handleClose();
         }else{

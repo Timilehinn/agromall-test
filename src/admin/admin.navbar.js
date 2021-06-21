@@ -32,8 +32,15 @@ function Navbar(prop) {
         history.push('/')
     }
     const syncSearch=async()=>{
+        let token = localStorage.getItem("_agro_m_tkn");
         setIsSyncing(true)
-        const res = await axios.post('https://agromall-server.herokuapp.com/api/market/sync-searchengine')
+        const res = await axios.post('https://agromall-server.herokuapp.com/api/market/sync-searchengine',{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                "x-access-token":token,
+            }
+        })
         console.log(res.data.msg)
         if(res.data.success){
             setIsSyncing(false)
@@ -64,13 +71,13 @@ function Navbar(prop) {
         <>
         <ToastContainer />
         <div className={styles.navbar}>
-            <h1 style={{color:'rgb(0,135,55)'}}>Admin</h1>
+            <h1 className={styles.logo}>Admin</h1>
             <div style={{display:'flex',alignItems:'center'}}>
-                {prop.sync? <Button variant="outlined" style={{marginRight:"1rem"}} onClick={()=>handleClickOpen()}>sync search</Button>:<></>}
-                <Button variant="outlined" onClick={()=>addMarket()}>Add market</Button>
+                {prop.sync? <Button variant="outlined" style={{fontSize:'.7rem',marginRight:"1rem"}} onClick={()=>handleClickOpen()}>sync search</Button>:<></>}
+                {prop.addmarket? <Button variant="outlined" style={{fontSize:'.7rem'}} onClick={()=>addMarket()}>Add market</Button>:<></>}
                 <span className={styles.logout} onClick={()=>handleLogout()}>
                     <FiLogOut />
-                Logout
+                    <span id={styles.logout_text}>Logout</span>
                 </span>
             </div>
 
@@ -78,8 +85,8 @@ function Navbar(prop) {
                 { isSyncing? <LinearProgress/>:'' }
                 <DialogTitle id="form-dialog-title">Sync Market Data with Search Engine.</DialogTitle>
                 <DialogContent>
-                This process will manually synchronize unsynced market data with search engine. Best used when
-                there's an error while auto sync fails when creating or updating market. Proceed?
+                This process will manually synchronize unsynced market data with search engine. Best used when 
+                auto sync fails while creating or updating market. Proceed?
                 </DialogContent>
                 <DialogActions>
                 <Button style={{textTransform:'Capitalize'}} onClick={handleClose}>

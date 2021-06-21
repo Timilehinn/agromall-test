@@ -3,7 +3,8 @@ import styles from '../styles/admin/login.module.css';
 import axios from 'axios'
 import { useHistory, Link } from 'react-router-dom'
 import {AuthContext} from '../contexts/authContextApi'
-import { FaTimes } from 'react-icons/fa'
+import { FaTimes, FaUserAlt } from 'react-icons/fa'
+import { RiUser6Line } from 'react-icons/ri'
 import { LinearProgress } from '@material-ui/core';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,55 +28,52 @@ function SignIn(props) {
     }
 
     const adminLogin= async(e)=>{
-
         e.preventDefault();
-            setIsLoading(true)
-            try{
-                const res = await axios.post('https://agromall-server.herokuapp.com/api/admin/login',{email,password})
-                if(res.data.session){
-                    setIsLoading(false)
-                    //INITIATE SESSION ID
-                    localStorage.setItem("_agro_m_tkn",res.data.token);
-                    setUserDetails(res.data.details);
-                    setAuth(res.data.authenticated);
-                    history.push('/admin');
-                }else{
-                    setIsLoading(false);
-                    setErrorBox('block')
-                    history.push({
-                        pathname:'/login/admin',
-                        state:{params:{msg:res.data.auth_msg}}
-                    });
-                }
-            }catch(err){
-                console.log(err)
+        setIsLoading(true)
+        if(errorBox) setErrorBox('none')
+        try{
+            const res = await axios.post('https://agromall-server.herokuapp.com/api/admin/login',{email,password})
+            if(res.data.session){
+                setIsLoading(false)
+                //INITIATE SESSION ID
+                localStorage.setItem("_agro_m_tkn",res.data.token);
+                setUserDetails(res.data.details);
+                setAuth(res.data.authenticated);
+                history.push('/admin');
+            }else{
                 setIsLoading(false);
                 setErrorBox('block')
                 history.push({
                     pathname:'/login/admin',
-                    state:{params:{msg:'There seems to be an issue with your internet connection.'}}
+                    state:{params:{msg:res.data.auth_msg}}
                 });
-                // toast.error(err.response.message,toastsettings)
             }
-            
+        }catch(err){
+            console.log(err)
+            setIsLoading(false);
+            setErrorBox('block')
+            history.push({
+                pathname:'/login/admin',
+                state:{params:{msg:'No internet, Check your network settings and try again.'}}
+            });
+            // toast.error(err.response.message,toastsettings)
+        }
     }
 
     return (
         <>
+            {isLoading? <LinearProgress style={{width:'100%'}} />:''}
             <ToastContainer />
             <div className={styles.container}>
-                    {isLoading? <div className={styles.loader2} />:''}
                     <form className={styles.form} onSubmit={(e)=>adminLogin(e)}>
-
-                        <p style={{textAlign:'center',color:"rgb(0,135,55)",marginBottom:'1rem',fontSize:'3rem'}}>
-                            Login 
+                        <RiUser6Line size="70" color="rgb(0,135,55)" />
+                        <p style={{textAlign:'center',color:"rgb(0,135,55)",marginTop:'1rem',marginBottom:'1rem',fontSize:'1.2rem'}}>
+                            Login as Admin. 
                         </p>
-                            <div onClick={()=>setErrorBox('none')} style={{display:errorBox}} className={styles.error_box}>
-                            <p>
-                            <FaTimes size={20} style={{cursor:'pointer'}} onClick={()=>setErrorBox('none')} />
-                                {login_msg}
-                            </p>
-                            </div>
+                        <div onClick={()=>setErrorBox('none')} style={{display:errorBox}} className={styles.error_box}>
+                            <FaTimes size={10} color="grey" style={{cursor:'pointer'}} onClick={()=>setErrorBox('none')} />
+                            <p>{login_msg}</p>
+                        </div>
                         
                         <div style={{display:'flex',width:'100%',marginTop:'.3rem',justifyContent:'space-between',alignItems:'center'}}>
                             <div style={{width:'35%',backgroundColor:'lightgrey',height:'1px'}}/>

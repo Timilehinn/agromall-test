@@ -1,7 +1,7 @@
 import React,{ useEffect, useState } from 'react';
 import styles from '../styles/user/home.module.css'
 import { makeStyles } from '@material-ui/core';
-import { HiOutlineLocationMarker, HiSearch } from 'react-icons/hi'
+import { HiOutlineLocationMarker, HiSearch, HiViewGrid } from 'react-icons/hi'
 import { Select, MenuItem, InputLabel, FormControl, Button } from '@material-ui/core';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
@@ -49,6 +49,8 @@ function Home() {
     const [ isSearching, setIsSearching ] = useState(false)
     const [ long, setLong ] = useState('')
     const [ lat, setLat ] = useState('')
+    const [ searchInfo, setSearchInfo ] = useState('')
+    const [ searchQuery, setSearchQuery ] = useState('')
     const toastsettings ={
         position: "bottom-center",
         autoClose: 3000,
@@ -125,13 +127,13 @@ function Home() {
             setAllMarket(_markets)
             setIsSearching(false)
             setSearchValue('')
+            setSearchInfo(res.data.info)
+            setSearchQuery(res.data.query)
 
         }else{
             setIsSearching(false)
             toast.error(res.data.msg, toastsettings)
         }
-        
-        console.log(_markets)
     }
 
     const classes = useStyles();
@@ -152,28 +154,27 @@ function Home() {
                             <input 
                                 value={searchValue}
                                 onChange={e=>setSearchValue(e.target.value)}
-                                placeholder="Search for a market"
+                                placeholder="Search by name, description"
                             />
-                            <FaTimes onClick={()=>setSearchValue('')} style={{cursor:'pointer',paddingRight:'.5rem'}}  color="rgb(0,135,55)" />
-                            <button className={styles.search_button} onClick={()=>handleSearch()}>Search</button>
+                            {searchValue? <FaTimes onClick={()=>setSearchValue('')} style={{cursor:'pointer',paddingRight:'.5rem'}}  color="rgb(0,135,55)" />:<></>}
+                            <button title="Search Markets" className={styles.search_button} onClick={()=>handleSearch()}>Search</button>
                         </span>
                       
                         {searchValue? (
                         <div style={{display:'flex',width:'100%',wordBreak:'break-word',flexDirection:'column'}}>
-                        {found.splice(0,3).map(f=>(
-                            <Link style={{color:'black',textDecoration:'none'}}
-                                to={{
-                                    pathname:`/market/${f.name}`,
-                                    state:{params:{id:f.id}}
-                                }}
-                            >
-                                <div className={styles.suggested} style={{color:"black"}}>
-                                    {f.name.length>80? f.name.substring(0,80)+'...':f.name} 
-                                    <span style={{fontSize:'.75rem',color:'grey',fontStyle:'italic'}}>on this page</span>
-                                </div>
-                            </Link>
-
-                        ))}
+                            {found.splice(0,3).map(f=>(
+                                <Link style={{color:'black',textDecoration:'none'}}
+                                    to={{
+                                        pathname:`/market/${f.name}`,
+                                        state:{params:{id:f.id}}
+                                    }}
+                                >
+                                    <div className={styles.suggested} style={{color:"black"}}>
+                                        {f.name.length>80? f.name.substring(0,80)+'...':f.name} 
+                                        <span style={{fontSize:'.75rem',color:'grey',fontStyle:'italic'}}>on this page</span>
+                                    </div>
+                                </Link>
+                            ))}
                         </div>
                     ):(
                         <></>
@@ -181,35 +182,46 @@ function Home() {
                     }
 
                     </div>
-                    {/* </div> */}
                     
             </nav>
             <span style={{display:'flex',marginTop:'30px',alignItems:'center',fontWeight:'bold',height:'20px'}}>
-                            {/* <div style={{display:'flex',alignItems:'center',marginRight:'1rem'}}> */}
-                                <Button>
-                                    <HiOutlineLocationMarker color="grey" size="20" />
-                                    <span className={styles.location_text}>Nearby markets</span>
-                                </Button>
-                               <span style={{color:'lightgrey',paddingRight:'.5rem'}}>|</span>
+                <button onClick={()=>alert('get by location')} style={{
+                    display:'flex',alignItems:'center',
+                    border:'0px',backgroundColor:"transparent",
+                    cursor:'pointer'
+                }} variant="default">
+                    <HiOutlineLocationMarker color="grey" size="20" />
+                    <span title="Search by location" className={styles.location_text}>Location</span>
+                </button>
+                <span style={{color:'lightgrey',paddingRight:'.5rem'}}>|</span>
                             {/* </div> */}
-                            <InputLabel htmlFor="grouped-select" style={{fontWeight:400,color:'grey',fontSize:'1.05rem'}}>Category</InputLabel>
-                            <Select onChange={(e)=>setSelectedCategory(e.target.value)} value={selectedCategory} style={{marginLeft:'.5rem'}} id="grouped-select" >
-                                <MenuItem value="dairy">
-                                    Dairy
-                                </MenuItem>
-                                <MenuItem value="fruits">
-                                    Fruits
-                                </MenuItem>
-                                <MenuItem value="vegetable">
-                                    Vegetable
-                                </MenuItem>
-                                <MenuItem value="grains">
-                                    Grains
-                                </MenuItem>
-                            </Select>
-                            <FaCheck color="grey" style={{cursor:'pointer'}} onClick={()=>categoryHandler()} />
+                <InputLabel htmlFor="grouped-select" style={{fontWeight:400,color:'grey',fontSize:'1.05rem'}}>Category</InputLabel>
+                <Select onChange={(e)=>setSelectedCategory(e.target.value)} value={selectedCategory} style={{color:'grey',marginLeft:'.5rem',fontSize:'.85rem'}} id="grouped-select" >
+                    <MenuItem value="dairy">
+                        Dairy
+                    </MenuItem>
+                    <MenuItem value="fruits">
+                        Fruits
+                    </MenuItem>
+                    <MenuItem value="vegetable">
+                        Vegetable
+                    </MenuItem>
+                    <MenuItem value="grains">
+                        Grains
+                    </MenuItem>
+                </Select>
+                <HiSearch title="Search category" color="grey" size="20" style={{cursor:'pointer'}} onClick={()=>categoryHandler()} />
+                <span style={{color:'lightgrey',paddingRight:'.5rem',paddingLeft:'.5rem'}}>|</span>
+                <span onClick={()=>getMarkets()} style={{cursor:'pointer',display:'flex',alignItems:'center',color:'grey'}}>
+                    <HiViewGrid />
+                    <span style={{fontWeight:400,color:'grey',fontSize:'1.05rem'}}>All</span>
+                </span>
+                            
             </span>
-               
+            {searchInfo?
+                <p>{searchInfo} "<span style={{color:'grey',fontStyle:'italic'}}>{searchQuery}</span>"</p>
+                :<></>
+            }
             <main>
                 {allMarket.length >0? (
                     <>
