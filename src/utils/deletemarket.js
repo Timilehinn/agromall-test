@@ -1,12 +1,9 @@
 import React,{ useState, useContext } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { GrUpdate } from 'react-icons/gr'
 import { MarketContext } from '../contexts/marketContextApi'
 import axios from 'axios'
 import { useHistory } from 'react-router';
@@ -76,16 +73,13 @@ function DeleteMarket(prop) {
       { isDeleting? <LinearProgress/>:'' }
         <DialogTitle id="form-dialog-title">Delete Market(s)</DialogTitle>
         <DialogContent>
-          {/* <DialogContentText>
-            Update market
-          </DialogContentText> */}
-          These action will delete all the selected {prop.selection.length} market(s). Proceed?
+          These action will delete {prop.selection.length} selected market(s). Proceed?
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>
+          <Button style={{textTransform:'capitalize'}} onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={()=>deleteMarket()}>
+          <Button style={{textTransform:'capitalize'}} onClick={()=>deleteMarket()}>
             Proceed
           </Button>
         </DialogActions>

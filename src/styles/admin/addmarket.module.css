@@ -1,7 +1,9 @@
 .container{
     margin-top:100px;
     display:flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 .form{
@@ -54,3 +56,18 @@
     align-items: center;
 }
 
+@media (min-width: 0px) and (max-width: 767px) { 
+    .container{
+        width:100%;
+    }
+    .form{
+        width: 90%;
+    }
+    .imagebox{
+        width:95%
+    }
+    .checkboxes{
+        flex-direction: column;
+    }
+
+}

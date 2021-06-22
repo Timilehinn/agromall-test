@@ -2,10 +2,10 @@ import React,{ useEffect, useState } from 'react';
 import styles from '../styles/user/home.module.css'
 import { makeStyles } from '@material-ui/core';
 import { HiOutlineLocationMarker, HiSearch, HiViewGrid } from 'react-icons/hi'
-import { Select, MenuItem, InputLabel, FormControl, Button } from '@material-ui/core';
+import { Select, MenuItem, InputLabel } from '@material-ui/core';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 import Geocode from "react-geocode";
 import { ToastContainer, toast } from 'react-toastify';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -154,7 +154,7 @@ function Home() {
                             <input 
                                 value={searchValue}
                                 onChange={e=>setSearchValue(e.target.value)}
-                                placeholder="Search by name, description"
+                                placeholder="Search by name, description ..."
                             />
                             {searchValue? <FaTimes onClick={()=>setSearchValue('')} style={{cursor:'pointer',paddingRight:'.5rem'}}  color="rgb(0,135,55)" />:<></>}
                             <button title="Search Markets" className={styles.search_button} onClick={()=>handleSearch()}>Search</button>

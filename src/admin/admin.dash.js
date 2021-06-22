@@ -8,6 +8,8 @@ import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import UpdateMarket from '../utils/updatemarket'
 import DeleteMarket from '../utils/deletemarket'
+import { Helmet } from 'react-helmet'
+
 function AdminDash() {
 
     const useStyles = makeStyles({
@@ -71,15 +73,20 @@ function AdminDash() {
                         <p style={{color:'black'}}>{cat.cat},</p>
                         
                     ))
-                }
-                    </>
+                  }
+                </>
             )
         }
-        }
+      }
     ]
 
     return (
-        <>   
+        <>  
+            <Helmet>
+                <title>
+                    Agromall - Admin
+                </title>
+            </Helmet> 
             <Navbar sync={true} addmarket={true} />
             <div className={styles.container}>
                 <div className={styles.data}>

@@ -1,22 +1,17 @@
 import React,{ useState } from 'react';
-import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import styles from '../styles/admin/addmarket.module.css';
 import Navbar from './admin.navbar'
-import Divider from '../utils/divider'
 import axios from 'axios';
 import Resizer from "react-image-file-resizer";
 import SelectedImage from '../utils/selectedimage';
-import { FaTimes } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { v4 } from 'uuid'
+import { v4 } from 'uuid';
+import { Helmet } from 'react-helmet'
 
 function AddMarket() {
 
@@ -126,6 +121,9 @@ function AddMarket() {
 
     return (
         <>
+        <Helmet>
+            <title>Agromall - Add Market</title>
+        </Helmet>
         <Navbar sync={false} addmarket={false} />
         <ToastContainer />
         <div className={styles.container}>
@@ -189,6 +187,7 @@ function AddMarket() {
                     id="standard-textarea"
                     label="Name"
                     placeholder="lorem ipsum ..."
+
                     style={{width:'100%',marginBottom:"50px"}}
                     onChange={(e)=>setName(e.target.value)}
                     inputProps={{ maxLength: 70 }}
