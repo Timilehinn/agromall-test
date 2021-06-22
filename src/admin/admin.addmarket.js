@@ -11,18 +11,32 @@ import SelectedImage from '../utils/selectedimage';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { v4 } from 'uuid';
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Geocode from "react-geocode";
 
 function AddMarket() {
 
+    Geocode.setApiKey("AIzaSyDACp6ZI_WWhM1y-vwWk9vgtw9t0Gfo--A");
+    Geocode.setRegion("ng");
+    Geocode.setLocationType("ROOFTOP");
     const [ images, setImages ] = useState([])
     const [ category, setCategory ] = useState([])
     const [ name, setName ] = useState('');
     const [ desc, setDesc ] = useState('');
     const [ location, setLocation ] = useState('');
+    const [ lat, setLat ] = useState('')
+    const [ long, setLong ] = useState('')
     const [ photo, setPhoto ] = useState('');
     const [ photoName, setPhotoName ] = useState('');
     const [ photoBase64, setPhotoBase64 ] = useState('');
+    const [ isLocating, setIsLocating ] = useState(false)
+    const [open, setOpen] = useState(false);
 
     const toastsettings ={
         position: "bottom-center",
@@ -33,6 +47,15 @@ function AddMarket() {
         draggable: true,
         progress: false,
     }
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setIsLocating(false)
+        setOpen(false);
+    };
 
     function handleFiles(event) {
         console.log(event.target.files.length, 'e t f length')
@@ -94,9 +117,11 @@ function AddMarket() {
             toast.error('Upload between 1 and 3 images',toastsettings);
         }else if(category.length === 0){
             toast.error('Choose at least one category',toastsettings);
+        }else if(!long || !lat){
+            toast.error('Confirm location to continue',toastsettings);
         }else{
             const res = await axios.post('https://agromall-server.herokuapp.com/api/market/add',{
-                id:v4(),images,name,category,desc,location  
+                id:v4(),images,name,category,desc,location,lat,long  
               },{
                 headers: {
                     'Accept': 'application/json',
@@ -118,6 +143,27 @@ function AddMarket() {
         }
         
     } 
+
+    const getLatLongFromLocation=()=>{
+        if(location && long){
+            setIsLocating(true)
+            Geocode.fromAddress(location).then(
+                (response) => {
+                    const { lat, lng } = response.results[0].geometry.location;
+                    setLong(lng)
+                    setLat(lat)
+                    setIsLocating(false);
+                    handleClose();
+                console.log(lat, lng);
+                },
+                (error) => {
+                console.error(error);
+                }
+            );
+        }else{
+            toast.error('Enter a location and proceed',toastsettings)
+        }
+    }
 
     return (
         <>
@@ -182,7 +228,8 @@ function AddMarket() {
                         label="Fruits"  
                     />
                 </div>
-            
+                <p>-- {lat} --</p> 
+                        <p>-- {long} --</p> 
                 <TextField
                     id="standard-textarea"
                     label="Name"
@@ -211,10 +258,44 @@ function AddMarket() {
                     label="Location"
                     placeholder="No 123, Ave ..."
                     style={{width:'100%',marginBottom:"20px"}}
-                    onChange={(e)=>setLocation(e.target.value)}
+                    // onChange={(e)=>setLocation(e.target.value)}
+                    onClick={()=>handleClickOpen()}
                     required
                     value={location}
                 />
+    {/* <Button onClick={()=>handleClickOpen()}>Add location</Button> */}
+                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                { isLocating? <LinearProgress/>:'' }
+                    <DialogTitle id="form-dialog-title">Add Market Location</DialogTitle>
+                    <DialogContent>
+                    {/* <DialogContentText>
+                        Add location
+                    </DialogContentText> */}
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="location"
+                        type="text"
+                        fullWidth
+                        value={location}
+                        onChange={e=>setLocation(e.target.value)}
+                        inputProps={{ maxLength: 50 }}
+                        required
+                    />
+                    <span style={{fontSize:'.7rem',color:'grey'}}>{0 + name.length}/50</span>
+                    
+                    {/* <span style={{fontSize:'.7rem',color:'grey'}}>{0 + location.length}/50</span> */}
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button disabled={isLocating? true:false} onClick={()=>getLatLongFromLocation()}>
+                        confirm
+                    </Button>
+                    </DialogActions>
+                </Dialog>
                 {/* <Divider text="Or" width="45%" textWidth="10%" /> */}
                 {/* <h3 style={{color:'grey'}}>Select location from map</h3> */}
                 <Button onClick={()=>addMarket()}  style={{width:"100%"}} variant="contained">Create Market </Button>

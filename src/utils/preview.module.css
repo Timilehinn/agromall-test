@@ -1,0 +1,51 @@
+.main{
+    word-break: break-word; 
+    border:.5px solid rgb(238, 234, 234);
+    padding:.3rem;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 300px 300px;
+    border-radius: 5px;
+}
+.blink_1 {
+    height:200px;
+    background-color:rgb(226, 226, 226);
+    margin-bottom:.4rem;
+    width:100%;
+    animation: blinker 2s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+}
+.blink_2 {
+  height:20px;
+  background-color:rgb(226, 226, 226);
+  margin-bottom:.4rem;
+  width:30%;
+  animation: blinker 2s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+    animation: blinker2 2s linear infinite;
+}
+.blink_3 {
+  height:20px;
+  background-color:rgb(226, 226, 226);
+  margin-bottom:.4rem;
+  width:50%;
+  animation: blinker 2s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+    animation: blinker 2s linear infinite;
+}
+
+.blink_4 {
+  height:20px;
+  background-color:rgb(226, 226, 226);
+  margin-bottom:.4rem;
+  width:80%;
+  animation: blinker 2s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+    animation: blinker 2s linear infinite;
+}
+  
+  @keyframes blinker {
+    50% {
+      opacity: 0.5;
+    }
+  }
+  @keyframes blinker2 {
+    20% {
+      opacity: 0.5;
+    }
+  }

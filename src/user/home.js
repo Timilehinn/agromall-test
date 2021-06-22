@@ -9,32 +9,38 @@ import { FaTimes } from 'react-icons/fa';
 import Geocode from "react-geocode";
 import { ToastContainer, toast } from 'react-toastify';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Preview from '../utils/preview'
 
 
 const MarketDiv=(prop)=>{
 
     return(
-        <div className={styles.market}>
-            <div className={styles.market_image}>
-                {prop.market.images.map(img=>(
-                    <img src={img.imguri} style={{}}  width="100%" height='auto' />
-                ))}
+        <Link style={{textDecoration:'none'}} 
+            to={{pathname:`/market/${prop.market.name}`,
+                state:{params:{id:prop.market.id}}
+            }}>
+            <div className={styles.market}>
+                <div className={styles.market_image}>
+                    {prop.market.images.map(img=>(
+                        <img src={img.imguri} style={{}}  width="100%" height='auto' />
+                    ))}
+                </div>
+                <div className={styles.category}>
+                    {prop.market.category.map(cat=>(
+                        <span>{cat.cat}</span>
+                    ))}
             </div>
-            <div className={styles.category}>
-                {prop.market.category.map(cat=>(
-                    <span>{cat.cat}</span>
-                ))}
-           </div>
-            <p style={{color:'black'}}>{prop.market.name.length>50? prop.market.name.substring(0,50)+'...':prop.market.name}</p>
-            <p style={{color:'grey', fontSize:'.8rem'}}><HiOutlineLocationMarker />  {prop.market.location.length>50? prop.market.location.substring(0,50)+'...':prop.market.location}</p>
-            
-            <p style={{color:'black', fontSize:'.8rem'}}>
-                {prop.market.desc.length>100? prop.market.desc.substring(0,100)+'...'
-                :
-                prop.market.desc} <Link style={{color:'grey'}} 
-                to={{pathname:`/market/${prop.market.name}`,state:{params:{id:prop.market.id}}}}>view</Link>
-            </p>
-        </div>
+                <p style={{color:'black'}}>{prop.market.name.length>50? prop.market.name.substring(0,50)+'...':prop.market.name}</p>
+                <p style={{color:'grey', fontSize:'.8rem'}}><HiOutlineLocationMarker />  {prop.market.location.length>50? prop.market.location.substring(0,50)+'...':prop.market.location}</p>
+                
+                <p style={{color:'black', fontSize:'.8rem'}}>
+                    {prop.market.desc.length>100? prop.market.desc.substring(0,100)+'...'
+                    :
+                    prop.market.desc} 
+                </p>
+            </div>
+        </Link>
+        
     )
 }
 
@@ -82,6 +88,25 @@ function Home() {
 
     useEffect(()=>{
         getMarkets();
+        // Geocode.toLatLng("bennyrose hotel,akure").then(
+        //     (response) => {
+        //       const address = response.results[0].formatted_address;
+        //       console.log(address);
+        //     },
+        //     (error) => {
+        //       console.error(error);
+        //     }
+        //   );
+        // Geocode.fromAddress("ennyrose hotel,akure").then(
+        //     (response) => {
+        //       const { lat, lng } = response.results[0].geometry.location;
+        //       console.log(lat, lng);
+        //     },
+        //     (error) => {
+        //       console.error(error);
+        //     }
+        //   );
+        getLocation();
     },[])
 
     // Searches by filtering avalilabe market 
@@ -136,6 +161,20 @@ function Home() {
         }
     }
 
+    const getLocation=()=>{
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position);
+        } else { 
+            console.error("Geolocation is not supported by this browser.");
+        }
+    }
+    const position=(pos)=>{
+        // alert('lat '+pos.coords.latitude+' long '+pos.coords.longitude)
+        // alert(JSON.stringify(pos))
+        setLong(pos.coords.longitude);
+        setLat(pos.coords.latitude)
+    }
+
     const classes = useStyles();
     const api_key ="";
 
@@ -185,13 +224,13 @@ function Home() {
                     
             </nav>
             <span style={{display:'flex',marginTop:'30px',alignItems:'center',fontWeight:'bold',height:'20px'}}>
-                <button onClick={()=>alert('get by location')} style={{
+                <button onClick={()=>alert(long+"  "+lat)} style={{
                     display:'flex',alignItems:'center',
                     border:'0px',backgroundColor:"transparent",
                     cursor:'pointer'
                 }} variant="default">
                     <HiOutlineLocationMarker color="grey" size="20" />
-                    <span title="Search by location" className={styles.location_text}>Location</span>
+                    <span title="Search by location" className={styles.location_text}>nearby</span>
                 </button>
                 <span style={{color:'lightgrey',paddingRight:'.5rem'}}>|</span>
                             {/* </div> */}
@@ -223,16 +262,25 @@ function Home() {
                 :<></>
             }
             <main>
-                {allMarket.length >0? (
+                {isSearching?(
                     <>
-                    {allMarket.map(market=>(
-                    <MarketDiv market={market} />
-                    ))}
-                    </>
-                ):(
-                    <h2 style={{color:'grey'}}>No Market found at this time.</h2>
-                )}
-                
+                        <Preview />
+                        <Preview />
+                        <Preview />
+                    </>)
+                :
+                <>
+                    {allMarket.length >0? (
+                        <>
+                        {allMarket.map(market=>(
+                        <MarketDiv market={market} />
+                        ))}
+                        </>
+                    ):(
+                        <h2 style={{color:'grey'}}>No Market found at this time.</h2>
+                    )}  
+                </>
+                }
             </main>
         </div>
         </>

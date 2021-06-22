@@ -121,18 +121,10 @@ main{
     grid-auto-flow:dense
 }
 .market{
-    /* display:flex;
-    align-items: flex-start;
-    flex-direction: column; */
     word-break: break-word; 
     border:.5px solid lightgrey;
     padding:.3rem;
-    /* width:30%; 
-    margin:.5rem;
-    padding:.4rem; */
-    /* max-width:400px; */
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    /* This will result on two rows, each one of 300px */
     grid-template-rows: 300px 300px;
     border-radius: 5px;
 }
@@ -210,7 +202,8 @@ main{
 @media (min-width: 768px) and (max-width: 1024px){ 
     main{
         margin-top:20px;
-        grid-template-columns: repeat(2, minmax(100%, 1fr));
+        /* grid-template-columns:preloader
+preloader repeat(2, minmax(100%, 1fr)); */
         width:95%;
         flex-direction: column;
     }
