@@ -2,6 +2,7 @@ import React,{ useEffect, useState } from 'react'
 import axios from 'axios'
 import styles from '../styles/market.module.css'
 import { HiOutlineLocationMarker } from 'react-icons/hi'
+import GoogleMapReact from 'google-map-react';
 
 function Market(props) {
 
@@ -11,6 +12,9 @@ function Market(props) {
     const [ name, setName ] = useState('');
     const [ desc, setDesc ] = useState('');
     const [ location, setLocation ] = useState('');
+    const [ lat, setLat ] = useState(0)
+    const [ long, setLong ] = useState(0)
+
 
     const getMarket=async()=>{
         const res = await axios.get(`https://agromall-server.herokuapp.com/api/market/one?id=${id}`)
@@ -19,7 +23,12 @@ function Market(props) {
         setLocation(res.data.market.location) 
         setCategory(res.data.market.category) 
         setImages(res.data.market.images) 
+        setLat(parseFloat(res.data.market.lat)) 
+        setLong(parseFloat(res.data.market.long)) 
+
     }
+    var center = {lat:lat,lng:long}
+    var zoom =11
 
     useEffect(()=>{
        getMarket()
@@ -35,6 +44,17 @@ function Market(props) {
            <h2>
            {name}
            </h2>
+           <GoogleMapReact
+          bootstrapURLKeys={{ key: "AIzaSyDACp6ZI_WWhM1y-vwWk9vgtw9t0Gfo--A" }}
+          defaultCenter={center}
+          defaultZoom={zoom}
+        >
+          <div
+            lat={lat}
+            lng={long}
+            text="My Marker"
+          />
+        </GoogleMapReact>
            <div className={styles.category}>
                 {category.map(cat=>(
                     <span>{cat.cat}</span>

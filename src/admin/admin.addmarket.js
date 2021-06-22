@@ -30,12 +30,13 @@ function AddMarket() {
     const [ name, setName ] = useState('');
     const [ desc, setDesc ] = useState('');
     const [ location, setLocation ] = useState('');
-    const [ lat, setLat ] = useState('')
-    const [ long, setLong ] = useState('')
+    const [ lat, setLat ] = useState(0)
+    const [ long, setLong ] = useState(0)
     const [ photo, setPhoto ] = useState('');
     const [ photoName, setPhotoName ] = useState('');
     const [ photoBase64, setPhotoBase64 ] = useState('');
-    const [ isLocating, setIsLocating ] = useState(false)
+    const [ isLocating, setIsLocating ] = useState(false);
+    const [ loading, setLoading ] = useState(false)
     const [open, setOpen] = useState(false);
 
     const toastsettings ={
@@ -120,6 +121,7 @@ function AddMarket() {
         }else if(!long || !lat){
             toast.error('Confirm location to continue',toastsettings);
         }else{
+            setLoading(true)
             const res = await axios.post('https://agromall-server.herokuapp.com/api/market/add',{
                 id:v4(),images,name,category,desc,location,lat,long  
               },{
@@ -130,6 +132,7 @@ function AddMarket() {
                 }
               })
               if(res.data.success){
+                  setLoading(false)
                   setImages([]);
                   setName('');
                   setCategory('');
@@ -137,6 +140,7 @@ function AddMarket() {
                   setLocation('');
                   toast.success(res.data.msg, toastsettings);
               }else{
+                  setLoading(false)
                   toast.error(res.data.msg,toastsettings);
               }
               console.log(res.data.msg)
@@ -145,7 +149,7 @@ function AddMarket() {
     } 
 
     const getLatLongFromLocation=()=>{
-        if(location && long){
+        if(location){
             setIsLocating(true)
             Geocode.fromAddress(location).then(
                 (response) => {
@@ -161,12 +165,13 @@ function AddMarket() {
                 }
             );
         }else{
-            toast.error('Enter a location and proceed',toastsettings)
+            toast.error("enter a location or address to proceed.",toastsettings)
         }
     }
 
     return (
         <>
+        {loading? <LinearProgress />:<></>}
         <Helmet>
             <title>Agromall - Add Market</title>
         </Helmet>

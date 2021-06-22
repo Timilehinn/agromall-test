@@ -11,35 +11,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Preview from '../utils/preview'
 
-
 const MarketDiv=(prop)=>{
 
     return(
-        <Link style={{textDecoration:'none'}} 
-            to={{pathname:`/market/${prop.market.name}`,
-                state:{params:{id:prop.market.id}}
-            }}>
-            <div className={styles.market}>
-                <div className={styles.market_image}>
-                    {prop.market.images.map(img=>(
-                        <img src={img.imguri} style={{}}  width="100%" height='auto' />
-                    ))}
-                </div>
-                <div className={styles.category}>
-                    {prop.market.category.map(cat=>(
-                        <span>{cat.cat}</span>
-                    ))}
-            </div>
-                <p style={{color:'black'}}>{prop.market.name.length>50? prop.market.name.substring(0,50)+'...':prop.market.name}</p>
-                <p style={{color:'grey', fontSize:'.8rem'}}><HiOutlineLocationMarker />  {prop.market.location.length>50? prop.market.location.substring(0,50)+'...':prop.market.location}</p>
-                
-                <p style={{color:'black', fontSize:'.8rem'}}>
-                    {prop.market.desc.length>100? prop.market.desc.substring(0,100)+'...'
-                    :
-                    prop.market.desc} 
-                </p>
-            </div>
-        </Link>
+        <></>
         
     )
 }
@@ -53,10 +28,11 @@ function Home() {
     const [ selectedCategory, setSelectedCategory ] =useState('vegetable'); // default value
     const [ searchValue, setSearchValue ] = useState('')
     const [ isSearching, setIsSearching ] = useState(false)
-    const [ long, setLong ] = useState('')
-    const [ lat, setLat ] = useState('')
+    const [ long, setLong ] = useState(0)
+    const [ lat, setLat ] = useState(0)
     const [ searchInfo, setSearchInfo ] = useState('')
-    const [ searchQuery, setSearchQuery ] = useState('')
+    const [ searchQuery, setSearchQuery ] = useState('');
+    const [ userAddr, setUserAddr ] = useState('')
     const toastsettings ={
         position: "bottom-center",
         autoClose: 3000,
@@ -76,6 +52,7 @@ function Home() {
     const getMarkets=async()=>{
         setIsSearching(true)
         const res = await axios.get('https://agromall-server.herokuapp.com/api/market/all?limit=50&offset=0')
+        console.log(res.data.market)
         if(res.data.success){
             setIsSearching(false)
             setAllMarket(res.data.market)
@@ -85,6 +62,7 @@ function Home() {
         }
     }
 
+  
 
     useEffect(()=>{
         getMarkets();
@@ -106,7 +84,8 @@ function Home() {
         //       console.error(error);
         //     }
         //   );
-        getLocation();
+        handleLocation();
+        
     },[])
 
     // Searches by filtering avalilabe market 
@@ -161,7 +140,7 @@ function Home() {
         }
     }
 
-    const getLocation=()=>{
+    const handleLocation=()=>{
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position);
         } else { 
@@ -169,10 +148,47 @@ function Home() {
         }
     }
     const position=(pos)=>{
-        // alert('lat '+pos.coords.latitude+' long '+pos.coords.longitude)
-        // alert(JSON.stringify(pos))
         setLong(pos.coords.longitude);
         setLat(pos.coords.latitude)
+            
+    }
+
+    const getUserAddr=()=>{
+            Geocode.fromLatLng(lat, long).then(
+            (response) => {
+              const address = response.results[0].formatted_address;
+            //   console.log(address);
+              setUserAddr(address)
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
+    }
+
+    const distance=(m_lat, m_long)=> { // where lat, long are the users coords. and m_lat, m_long are coords of the market 
+        var p = 0.017453292519943295;    // where Math.PI / 180
+        var c = Math.cos;
+        var a = 0.5 - c((m_lat - lat) * p)/2 + 
+                c(lat * p) * c(m_lat * p) * 
+                (1 - c((m_long - long) * p))/2;
+        return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+    }
+
+    const getNearbyMarkets=()=>{
+        var found = [];
+        allMarket.forEach(m=>{
+            if(distance(m.lat,m.long) < 15 ){
+                found.push(m)
+            }
+        })
+        setAllMarket(found)
+    }  
+
+    const distanceUnit=(m_lat,m_long)=>{
+        const dis = distance(m_lat,m_long)
+        if(dis > 1) return parseInt(dis) +'km'
+        else if(dis < 1) return parseInt(dis * 1000) +'m'
     }
 
     const classes = useStyles();
@@ -224,7 +240,7 @@ function Home() {
                     
             </nav>
             <span style={{display:'flex',marginTop:'30px',alignItems:'center',fontWeight:'bold',height:'20px'}}>
-                <button onClick={()=>alert(long+"  "+lat)} style={{
+                <button onClick={()=>getNearbyMarkets()} style={{
                     display:'flex',alignItems:'center',
                     border:'0px',backgroundColor:"transparent",
                     cursor:'pointer'
@@ -233,7 +249,6 @@ function Home() {
                     <span title="Search by location" className={styles.location_text}>nearby</span>
                 </button>
                 <span style={{color:'lightgrey',paddingRight:'.5rem'}}>|</span>
-                            {/* </div> */}
                 <InputLabel htmlFor="grouped-select" style={{fontWeight:400,color:'grey',fontSize:'1.05rem'}}>Category</InputLabel>
                 <Select onChange={(e)=>setSelectedCategory(e.target.value)} value={selectedCategory} style={{color:'grey',marginLeft:'.5rem',fontSize:'.85rem'}} id="grouped-select" >
                     <MenuItem value="dairy">
@@ -257,10 +272,12 @@ function Home() {
                 </span>
                             
             </span>
+            <h2>{userAddr}</h2>
             {searchInfo?
                 <p>{searchInfo} "<span style={{color:'grey',fontStyle:'italic'}}>{searchQuery}</span>"</p>
                 :<></>
             }
+            <button onClick={()=>getUserAddr()}>ge addr</button>
             <main>
                 {isSearching?(
                     <>
@@ -273,7 +290,33 @@ function Home() {
                     {allMarket.length >0? (
                         <>
                         {allMarket.map(market=>(
-                        <MarketDiv market={market} />
+                            <Link style={{textDecoration:'none'}} 
+            to={{pathname:`/market/${market.name}`,
+                state:{params:{id:market.id}}
+            }}>
+            <div className={styles.market}>
+                <div className={styles.market_image}>
+                    {market.images.map(img=>(
+                        <img src={img.imguri} style={{}}  width="100%" height='auto' />
+                    ))}
+                </div>
+                <div className={styles.category}>
+                    {market.category.map(cat=>(
+                        <span>{cat.cat}</span>
+                    ))}
+                </div>
+                <p style={{color:"grey",fontSize:'.85rem'}}>{distanceUnit(market.lat,market.long)} from you</p>
+                <p style={{color:'black'}}>{market.name.length>50? market.name.substring(0,50)+'...':market.name}</p>
+                <p style={{color:'grey', fontSize:'.8rem'}}><HiOutlineLocationMarker />  {market.location.length>50? market.location.substring(0,50)+'...':market.location}</p>
+                
+                <p style={{color:'black', fontSize:'.8rem'}}>
+                    {market.desc.length>100? market.desc.substring(0,100)+'...'
+                    :
+                    market.desc} 
+                </p>
+                <button onClick={()=>distance(market.lat,market.long)}>get distanec</button>
+            </div>
+        </Link>
                         ))}
                         </>
                     ):(
