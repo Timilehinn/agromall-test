@@ -10,6 +10,7 @@ import Geocode from "react-geocode";
 import { ToastContainer, toast } from 'react-toastify';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Preview from '../utils/preview'
+import { Button } from '@material-ui/core'
 
 const MarketDiv=(prop)=>{
 
@@ -62,30 +63,10 @@ function Home() {
         }
     }
 
-  
-
     useEffect(()=>{
         getMarkets();
-        // Geocode.toLatLng("bennyrose hotel,akure").then(
-        //     (response) => {
-        //       const address = response.results[0].formatted_address;
-        //       console.log(address);
-        //     },
-        //     (error) => {
-        //       console.error(error);
-        //     }
-        //   );
-        // Geocode.fromAddress("ennyrose hotel,akure").then(
-        //     (response) => {
-        //       const { lat, lng } = response.results[0].geometry.location;
-        //       console.log(lat, lng);
-        //     },
-        //     (error) => {
-        //       console.error(error);
-        //     }
-        //   );
         handleLocation();
-        
+        getUserAddr()
     },[])
 
     // Searches by filtering avalilabe market 
@@ -157,7 +138,7 @@ function Home() {
             Geocode.fromLatLng(lat, long).then(
             (response) => {
               const address = response.results[0].formatted_address;
-            //   console.log(address);
+              console.log(address);
               setUserAddr(address)
             },
             (error) => {
@@ -166,16 +147,19 @@ function Home() {
           );
     }
 
+    // this function calculates the distance in km between the user and each market
+    // distance is calculated by radius not by road.
     const distance=(m_lat, m_long)=> { // where lat, long are the users coords. and m_lat, m_long are coords of the market 
         var p = 0.017453292519943295;    // where Math.PI / 180
         var c = Math.cos;
         var a = 0.5 - c((m_lat - lat) * p)/2 + 
                 c(lat * p) * c(m_lat * p) * 
                 (1 - c((m_long - long) * p))/2;
-        return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+        return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km (rad of the earth)
     }
 
     const getNearbyMarkets=()=>{
+        // or query from the database which might be slow based on results returned
         var found = [];
         allMarket.forEach(m=>{
             if(distance(m.lat,m.long) < 15 ){
@@ -191,9 +175,6 @@ function Home() {
         else if(dis < 1) return parseInt(dis * 1000) +'m'
     }
 
-    const classes = useStyles();
-    const api_key ="";
-
     return (
         <>
         {isSearching? <LinearProgress style={{zIndex:100,width:'100%'}} />:<></>}
@@ -201,7 +182,7 @@ function Home() {
             <ToastContainer />
             <nav>
                 <span className={styles.logo}>
-                    AgroMall
+                    AgroMall Market
                 </span>
                 {/* <div style={{display:'flex',width:'60%',alignItems:'flex-start',justifyContent:"flex-end"}}> */}
                     <div className={styles.search}>
@@ -237,7 +218,7 @@ function Home() {
                     }
 
                     </div>
-                    
+            <p style={{textAlign:"center",fontSize:'.75rem'}}><HiOutlineLocationMarker/>My location: {userAddr} (test purpose)</p>
             </nav>
             <span style={{display:'flex',marginTop:'30px',alignItems:'center',fontWeight:'bold',height:'20px'}}>
                 <button onClick={()=>getNearbyMarkets()} style={{
@@ -246,10 +227,10 @@ function Home() {
                     cursor:'pointer'
                 }} variant="default">
                     <HiOutlineLocationMarker color="grey" size="20" />
-                    <span title="Search by location" className={styles.location_text}>nearby</span>
+                    <span title="Search by location, location from your browser is usually determined by IP address which may not be correct" className={styles.location_text}>nearby (15km)</span>
                 </button>
                 <span style={{color:'lightgrey',paddingRight:'.5rem'}}>|</span>
-                <InputLabel htmlFor="grouped-select" style={{fontWeight:400,color:'grey',fontSize:'1.05rem'}}>Category</InputLabel>
+                <InputLabel htmlFor="grouped-select" style={{fontWeight:400,color:'grey',fontSize:'.85rem'}}>Category</InputLabel>
                 <Select onChange={(e)=>setSelectedCategory(e.target.value)} value={selectedCategory} style={{color:'grey',marginLeft:'.5rem',fontSize:'.85rem'}} id="grouped-select" >
                     <MenuItem value="dairy">
                         Dairy
@@ -270,14 +251,11 @@ function Home() {
                     <HiViewGrid />
                     <span style={{fontWeight:400,color:'grey',fontSize:'1.05rem'}}>All</span>
                 </span>
-                            
             </span>
-            <h2>{userAddr}</h2>
             {searchInfo?
                 <p>{searchInfo} "<span style={{color:'grey',fontStyle:'italic'}}>{searchQuery}</span>"</p>
                 :<></>
             }
-            <button onClick={()=>getUserAddr()}>ge addr</button>
             <main>
                 {isSearching?(
                     <>
@@ -291,32 +269,31 @@ function Home() {
                         <>
                         {allMarket.map(market=>(
                             <Link style={{textDecoration:'none'}} 
-            to={{pathname:`/market/${market.name}`,
-                state:{params:{id:market.id}}
-            }}>
-            <div className={styles.market}>
-                <div className={styles.market_image}>
-                    {market.images.map(img=>(
-                        <img src={img.imguri} style={{}}  width="100%" height='auto' />
-                    ))}
-                </div>
-                <div className={styles.category}>
-                    {market.category.map(cat=>(
-                        <span>{cat.cat}</span>
-                    ))}
-                </div>
-                <p style={{color:"grey",fontSize:'.85rem'}}>{distanceUnit(market.lat,market.long)} from you</p>
-                <p style={{color:'black'}}>{market.name.length>50? market.name.substring(0,50)+'...':market.name}</p>
-                <p style={{color:'grey', fontSize:'.8rem'}}><HiOutlineLocationMarker />  {market.location.length>50? market.location.substring(0,50)+'...':market.location}</p>
-                
-                <p style={{color:'black', fontSize:'.8rem'}}>
-                    {market.desc.length>100? market.desc.substring(0,100)+'...'
-                    :
-                    market.desc} 
-                </p>
-                <button onClick={()=>distance(market.lat,market.long)}>get distanec</button>
-            </div>
-        </Link>
+                            to={{pathname:`/market/${market.name}`,
+                                state:{params:{id:market.id}}
+                            }}>
+                            <div className={styles.market}>
+                                <div className={styles.market_image}>
+                                    {market.images.map(img=>(
+                                        <img src={img.imguri} style={{}}  width="100%" height='auto' />
+                                    ))}
+                                </div>
+                                <div className={styles.category}>
+                                    {market.category.map(cat=>(
+                                        <span>{cat.cat}</span>
+                                    ))}
+                                </div>
+                                <p style={{color:"grey",fontSize:'.85rem'}}>{distanceUnit(market.lat,market.long)} from you</p>
+                                <p style={{color:'black'}}>{market.name.length>50? market.name.substring(0,50)+'...':market.name}</p>
+                                <p style={{color:'grey', fontSize:'.8rem'}}><HiOutlineLocationMarker />  {market.location.length>50? market.location.substring(0,50)+'...':market.location}</p>
+                                
+                                <p style={{color:'black', fontSize:'.8rem'}}>
+                                    {market.desc.length>100? market.desc.substring(0,100)+'...'
+                                    :
+                                    market.desc} 
+                                </p>
+                            </div>
+                            </Link>
                         ))}
                         </>
                     ):(
@@ -326,6 +303,11 @@ function Home() {
                 }
             </main>
         </div>
+        <Button disabled>prev</Button>
+        <Button disabled>next</Button>
+        <footer>
+
+        </footer>
         </>
     )
 }

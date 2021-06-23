@@ -233,8 +233,6 @@ function AddMarket() {
                         label="Fruits"  
                     />
                 </div>
-                <p>-- {lat} --</p> 
-                        <p>-- {long} --</p> 
                 <TextField
                     id="standard-textarea"
                     label="Name"
@@ -263,19 +261,14 @@ function AddMarket() {
                     label="Location"
                     placeholder="No 123, Ave ..."
                     style={{width:'100%',marginBottom:"20px"}}
-                    // onChange={(e)=>setLocation(e.target.value)}
                     onClick={()=>handleClickOpen()}
                     required
                     value={location}
                 />
-    {/* <Button onClick={()=>handleClickOpen()}>Add location</Button> */}
                 <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 { isLocating? <LinearProgress/>:'' }
                     <DialogTitle id="form-dialog-title">Add Market Location</DialogTitle>
                     <DialogContent>
-                    {/* <DialogContentText>
-                        Add location
-                    </DialogContentText> */}
                     <TextField
                         autoFocus
                         margin="dense"
@@ -283,14 +276,13 @@ function AddMarket() {
                         label="location"
                         type="text"
                         fullWidth
+                        placeholder="Location or address needs to be detailed."
                         value={location}
                         onChange={e=>setLocation(e.target.value)}
                         inputProps={{ maxLength: 50 }}
                         required
                     />
                     <span style={{fontSize:'.7rem',color:'grey'}}>{0 + name.length}/50</span>
-                    
-                    {/* <span style={{fontSize:'.7rem',color:'grey'}}>{0 + location.length}/50</span> */}
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleClose}>

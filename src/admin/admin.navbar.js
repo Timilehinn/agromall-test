@@ -1,4 +1,4 @@
-import React,{ useState } from 'react'
+import React,{ useState, useContext } from 'react'
 import styles from '../styles/admin/navbar.module.css'
 import { FiLogOut } from 'react-icons/fi'
 import { Link, useHistory } from 'react-router-dom'
@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MarketContext } from '../contexts/marketContextApi'
 
 
 function Navbar(prop) {
@@ -26,6 +27,7 @@ function Navbar(prop) {
     }
     const [ isSyncing, setIsSyncing ] = useState(false)
     const [open, setOpen] = useState(false);
+    const { market, setMarket } = useContext(MarketContext)
     const history = useHistory();
     const handleLogout=()=>{
         localStorage.removeItem('_agro_m_tkn')
@@ -73,7 +75,7 @@ function Navbar(prop) {
         <div className={styles.navbar}>
             <h1 className={styles.logo}>Admin</h1>
             <div style={{display:'flex',alignItems:'center'}}>
-                {prop.sync? <Button variant="outlined" style={{fontSize:'.7rem',marginRight:"1rem"}} onClick={()=>handleClickOpen()}>sync search</Button>:<></>}
+                {prop.sync? <Button variant="outlined" style={{fontSize:'.7rem',marginRight:"1rem"}} disabled={market.length>0? false:true} onClick={()=>handleClickOpen()}>sync search</Button>:<></>}
                 {prop.addmarket? <Button variant="outlined" style={{fontSize:'.7rem'}} onClick={()=>addMarket()}>Add market</Button>:<></>}
                 <span className={styles.logout} onClick={()=>handleLogout()}>
                     <FiLogOut />

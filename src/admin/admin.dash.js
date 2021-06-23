@@ -89,14 +89,16 @@ function AdminDash() {
             </Helmet> 
             <Navbar sync={true} addmarket={true} />
             <div className={styles.container}>
-                <div className={styles.data}>
-            <div className={styles.grid_header}>
-                <h2>My Markets.</h2>
-                <div style={{display:"flex",alignItems:"center"}}>
-                    {selection.length === 1?<UpdateMarket selection={selection} />:<></>}
-                    {selection.length>0? <DeleteMarket selection={selection} />:<></>}
-                </div>
-                </div>
+                {market.length>0 &&(
+                    <div className={styles.data}>
+                    <div className={styles.grid_header}>
+                        <h2>My Markets.</h2>
+                        <div style={{display:"flex",alignItems:"center"}}>
+                            {selection.length === 1?<UpdateMarket selection={selection} />:<></>}
+                            {selection.length>0? <DeleteMarket selection={selection} />:<></>}
+                        </div>
+                    </div>
+                
                     <DataGrid 
                         zIndex={100}
                         className={classes.root}
@@ -107,6 +109,13 @@ function AdminDash() {
                         onRowSelected={(e)=>handleSelection(e)} 
                     />
                 </div>
+                )}
+                {market.length == 0? (
+                    <div style={{display:'flex',color:'grey',alignItems:'center',justifyContent:'center',width:'100%'}}>
+                        <h3>You Have no market data yet, click Add Market to get Started</h3>
+                    </div>
+                ):''}
+               
                 <div className={styles.side}>
                     <h3>Some data or functionality</h3>
                 </div>
